@@ -2,6 +2,10 @@
 name = "kyaaa"
 version = "0.0.1"
 edition = "2024"
+description = "..."
+license = "AGPLv3"
+repository = "https://github.com/SAP2B/kyaaa"
+readme = "README.md"
 
 [dependencies]
 
