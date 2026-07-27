@@ -78,45 +78,25 @@ impl Siren {
 
         (sample_q16 >> 1) as i16
     }
-}
 
-pub static mut SIREN: Siren = Siren::new(400.0, 1200.0, 1.5);
-
-pub unsafe extern "C" fn siren_train_step(
-    lib_ptr: *mut Library<3, 256>,
-    opcode: u8,
-    fd: i32,
-) -> bool {
-    if lib_ptr.is_null() {
-        return false;
-    }
-
-    let lib = unsafe { &mut *lib_ptr };
-
-    if !lib.push(opcode) {
-        unsafe { lib.flush_sys(fd) };
-        if !lib.push(opcode) {
-            return false;
+    pub fn process(&mut self, buffer: &mut [i16]) {
+        for sample in buffer.iter_mut() {
+            *sample = self.next_sample();
         }
     }
 
-    if let Some(params) = lib.pop::<SirenParams>() {
-        let siren_ptr = core::ptr::addr_of_mut!(SIREN);
-        unsafe { (*siren_ptr).apply_params(params) };
-    }
+    pub fn train_step(&mut self, lib: &mut Library<3, 256>, opcode: u8, fd: i32) -> bool {
+        if !lib.push(opcode) {
+            unsafe { lib.flush_sys(fd) };
+            if !lib.push(opcode) {
+                return false;
+            }
+        }
 
-    true
-}
+        if let Some(params) = lib.pop::<SirenParams>() {
+            self.apply_params(params);
+        }
 
-pub unsafe extern "C" fn siren_process(buffer: *mut i16, len: usize) {
-    if buffer.is_null() {
-        return;
-    }
-
-    let buf = unsafe { core::slice::from_raw_parts_mut(buffer, len) };
-    let siren_ptr = core::ptr::addr_of_mut!(SIREN);
-
-    for sample in buf.iter_mut() {
-        *sample = unsafe { (*siren_ptr).next_sample() };
+        true
     }
 }

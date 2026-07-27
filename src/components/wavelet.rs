@@ -91,45 +91,25 @@ impl Wavelet {
 
         (output_q16 >> 1) as i16
     }
-}
 
-pub static mut WAVELET: Wavelet = Wavelet::new(10.0, 440.0, 1.0);
-
-pub unsafe extern "C" fn wavelet_train_step(
-    lib_ptr: *mut Library<3, 256>,
-    opcode: u8,
-    fd: i32,
-) -> bool {
-    if lib_ptr.is_null() {
-        return false;
-    }
-
-    let lib = unsafe { &mut *lib_ptr };
-
-    if !lib.push(opcode) {
-        unsafe { lib.flush_sys(fd) };
-        if !lib.push(opcode) {
-            return false;
+    pub fn process(&mut self, buffer: &mut [i16]) {
+        for sample in buffer.iter_mut() {
+            *sample = self.next_sample();
         }
     }
 
-    if let Some(params) = lib.pop::<WaveletParams>() {
-        let wavelet_ptr = core::ptr::addr_of_mut!(WAVELET);
-        unsafe { (*wavelet_ptr).apply_params(params) };
-    }
+    pub fn train_step(&mut self, lib: &mut Library<3, 256>, opcode: u8, fd: i32) -> bool {
+        if !lib.push(opcode) {
+            unsafe { lib.flush_sys(fd) };
+            if !lib.push(opcode) {
+                return false;
+            }
+        }
 
-    true
-}
+        if let Some(params) = lib.pop::<WaveletParams>() {
+            self.apply_params(params);
+        }
 
-pub unsafe extern "C" fn wavelet_process(buffer: *mut i16, len: usize) {
-    if buffer.is_null() {
-        return;
-    }
-
-    let buf = unsafe { core::slice::from_raw_parts_mut(buffer, len) };
-    let wavelet_ptr = core::ptr::addr_of_mut!(WAVELET);
-
-    for sample in buf.iter_mut() {
-        *sample = unsafe { (*wavelet_ptr).next_sample() };
+        true
     }
 }

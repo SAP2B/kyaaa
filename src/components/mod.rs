@@ -4,6 +4,7 @@
 pub mod book;
 pub mod case;
 pub mod library;
+pub mod mobius;
 pub mod prelude;
 pub mod siren;
 pub mod wavelet;
