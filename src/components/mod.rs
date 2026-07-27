@@ -3,7 +3,7 @@
 
 pub mod book;
 pub mod case;
-pub mod function;
 pub mod library;
 pub mod prelude;
-pub mod quant;
+pub mod siren;
+pub mod wavelet;
