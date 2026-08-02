@@ -14,4 +14,4 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn main() {}
+pub extern "C" fn _start() {}
