@@ -1,0 +1,20 @@
+[package]
+name = "kyaaa"
+version = "0.0.2"
+edition = "2024"
+description = "..."
+license = "AGPL-3.0-only"
+repository = "https://github.com/SAP2B/kyaaa"
+readme = "README.md"
+
+[dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+opt-level = 3
+panic = "abort"
+lto = true
+codegen-units = 1
+strip = true
