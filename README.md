@@ -31,6 +31,7 @@ kyaaa = "0.0.3"
 This is the exact code used to verify the zero-cost assembly output, featuring mixed structs, named mutability, and optimization barriers:
 
 ```rust
+
 use kyaaa::book;
 
 #[repr(transparent)]
@@ -58,17 +59,20 @@ fn main() {
         mut john => Boy { name: Name("John Doe"), age: 15, dev: false }
     );
 
-    hlist.zelda().title = Title("Zelda: Breath of the Wild");
-    hlist.zelda().best_seller = false;
+    unsafe {
+        hlist.zelda().title = Title("Zelda: Breath of the Wild");
+        hlist.zelda().best_seller = false;
 
-    hlist.john().name = Name("John Wick");
-    hlist.john().dev = true;
-    hlist.john().age = 35;
+        hlist.john().name = Name("John Wick");
+        hlist.john().dev = true;
+        hlist.john().age = 35;
+
+        black_box(hlist.zelda());
+        black_box(hlist.john());
+    }
 
     black_box(hlist.nier_automata());
-    black_box(hlist.zelda());
     black_box(hlist.sap());
-    black_box(hlist.john());
 }
 
 #[inline(always)]
@@ -76,7 +80,6 @@ fn black_box<T>(dummy: T) -> T {
     core::hint::black_box(dummy)
 }
 ```
-
 ---
 
 ## 🔬 Assembly Proof (Zero-Cost Verified)

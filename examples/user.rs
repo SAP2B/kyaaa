@@ -24,11 +24,13 @@ fn main() {
         mut alice => User { name: "Alice", password: "67890" }
     );
 
-    hlist.alice().password = "New_Alice";
-    hlist.sap().password = "New_Sap";
-    hlist.sap().dev = false;
-    black_box(hlist.alice());
-    black_box(hlist.sap());
+    unsafe {
+        hlist.alice().password = "New_Alice";
+        hlist.sap().password = "New_Sap";
+        hlist.sap().dev = false;
+        black_box(hlist.alice());
+        black_box(hlist.sap());
+    }
 }
 
 #[inline(always)]

@@ -30,14 +30,15 @@ fn test_hlist_book() {
     assert_eq!(hlist.admin().name, "Admin");
     assert!(hlist.admin().dev);
 
-    hlist.alice().password = "New_Alice_Password";
-    hlist.sap().password = "New_Sap_Password";
-    hlist.sap().dev = false;
+    unsafe {
+        hlist.alice().password = "New_Alice_Password";
+        hlist.sap().password = "New_Sap_Password";
+        hlist.sap().dev = false;
 
-    assert_eq!(hlist.alice().password, "New_Alice_Password");
-    assert_eq!(hlist.sap().password, "New_Sap_Password");
-    assert!(!hlist.sap().dev);
-
+        assert_eq!(hlist.alice().password, "New_Alice_Password");
+        assert_eq!(hlist.sap().password, "New_Sap_Password");
+        assert!(!hlist.sap().dev);
+    }
     let bob_retrieved: &User = hlist.get(0);
     assert_eq!(bob_retrieved.name, "Bob");
     assert_eq!(bob_retrieved.password, "12345");

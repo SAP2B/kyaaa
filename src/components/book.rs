@@ -82,7 +82,7 @@ macro_rules! book {
                 $($methods)*
                 #[inline(always)]
                 #[allow(clippy::mut_from_ref)]
-                pub fn $label(&self) -> &'static mut $Type {
+                pub unsafe fn $label(&self) -> &'static mut $Type {
                     unsafe { &mut *$label.inner.get() }
                 }
             ]
