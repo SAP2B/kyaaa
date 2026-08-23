@@ -112,7 +112,11 @@ fn test_dynamic_retrieval() {
 
     assert_eq!(game_at_0.best_seller, true);
     
-    hlist.zelda().best_seller = false;
+    
+    unsafe {
+        hlist.zelda().best_seller = false;
+    }
+
     assert_eq!(hlist.get::<Game>(1).best_seller, false);
 }
 ```
