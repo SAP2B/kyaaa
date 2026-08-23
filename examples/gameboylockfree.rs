@@ -30,7 +30,14 @@ fn main() {
         mut zelda => Game { title: Title("Zelda"), best_seller: true },
         sap => Boy { name: Name("SAP2B"), age: 69, dev: true },
         mut john => Boy { name: Name("John Doe"), age: 15, dev: false },
+        lockfree stats => Boy { name: Name("LockFree Boy"), age: 20, dev: true }
     );
+
+    hlist.stats().write(Boy {
+        name: Name("LockFree Boy Updated"),
+        age: 21,
+        dev: true,
+    });
 
     unsafe {
         hlist.zelda().title = Title("Zelda: Breath of the Wild");
@@ -44,6 +51,7 @@ fn main() {
         black_box(hlist.john());
     }
 
+    black_box(hlist.stats().read());
     black_box(hlist.nier_automata());
     black_box(hlist.sap());
 }

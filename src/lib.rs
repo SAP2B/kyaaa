@@ -4,8 +4,8 @@
 #![no_std]
 
 pub mod components;
-pub use components::book::Book;
-pub use components::buffer::Buffer;
+pub use components::book::*;
+pub use components::buffer::*;
 
 pub mod prelude {
     pub use crate::components::prelude::*;
