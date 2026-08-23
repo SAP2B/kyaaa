@@ -1,8 +1,10 @@
 [package]
 name = "kyaaa"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2024"
-description = "..."
+description = "A zero-cost, no_std Heterogeneous List (HList) macro with named fields, surgical mutability, and zero allocation."
+keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
+categories = ["data-structures", "no-std", "embedded", "memory-management"]
 license = "AGPL-3.0-only"
 repository = "https://github.com/SAP2B/kyaaa"
 readme = "README.md"
