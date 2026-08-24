@@ -3,5 +3,5 @@
 
 #[repr(u8)]
 pub enum Errors {
-    NetProtoCorruptedData = 0,
+    ProtoCorruptedData = 0,
 }

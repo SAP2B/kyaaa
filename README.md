@@ -1,4 +1,4 @@
-# kyaaa 🚀
+# kyaaa 🚀 (Beta)
 
 An ultra-efficient, **zero-cost, `no_std`-compatible Heterogeneous List (HList)** implementation for Rust using declarative macros. It bridges the gap between high-level ergonomic data modeling and bare-metal assembly performance.
 
@@ -17,11 +17,8 @@ An ultra-efficient, **zero-cost, `no_std`-compatible Heterogeneous List (HList)*
 
 ## 📦 Installation
 
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-kyaaa = "0.0.3"
+```bash
+cargo add kyaaa
 ```
 
 ---
@@ -120,10 +117,10 @@ fn test_hlist_book() {
     let hlist = book!(
         bob => User { name: "Bob", password: "12345" },
         mut sap => Admin { name: "SAP", password: "UwU", dev: true },
-        lockfree stats => Admin { name: "Stats", password: "LockFreePass", dev: false },
+        readfull stats => Admin { name: "Stats", password: "LockFreePass", dev: false },
         admin => Admin { name: "Admin", password: "OwO", dev: true },
         mut alice => User { name: "Alice", password: "67890" },
-        lockfree lock_user => User { name: "LockBob", password: "abc" }
+        readfull lock_user => User { name: "LockBob", password: "abc" }
     );
 
     assert_eq!(hlist.bob().name, "Bob");

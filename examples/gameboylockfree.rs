@@ -30,7 +30,7 @@ fn main() {
         mut zelda => Game { title: Title("Zelda"), best_seller: true },
         sap => Boy { name: Name("SAP2B"), age: 69, dev: true },
         mut john => Boy { name: Name("John Doe"), age: 15, dev: false },
-        lockfree stats => Boy { name: Name("LockFree Boy"), age: 20, dev: true }
+        readfull stats => Boy { name: Name("LockFree Boy"), age: 20, dev: true }
     );
 
     hlist.stats().write(Boy {
