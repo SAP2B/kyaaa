@@ -69,8 +69,8 @@ macro_rules! book {
         #[derive(Debug, core::marker::Copy, core::clone::Clone)]
         pub struct Book<const N: usize>(pub [*const (); N]);
 
-        unsafe impl<const N: usize> core::marker::Sync for Book<N> {}
-        unsafe impl<const N: usize> core::marker::Send for Book<N> {}
+        // unsafe impl<const N: usize> core::marker::Sync for Book<N> {}
+        // unsafe impl<const N: usize> core::marker::Send for Book<N> {}
 
         #[repr(transparent)]
         pub struct BookRef<T, const ID: u8>(pub *mut T);
@@ -136,18 +136,20 @@ macro_rules! book {
             }
 
             #[inline(always)]
-            pub const fn get<T>(&self, id: u8) -> Option<&'static T> {
-                if (id as usize) < N {
-                    unsafe { Some(&*(self.0[id as usize] as *const T)) }
+            pub fn get<T: 'static>(&self, id: u8) -> Option<&'static T> {
+                let idx = id as usize;
+                if idx < N && TYPES[idx] == core::any::TypeId::of::<T>() {
+                    unsafe { Some(&*(self.0[idx] as *const T)) }
                 } else {
                     None
                 }
             }
 
             #[inline(always)]
-            pub const fn get_mut<T>(&self, id: u8) -> Option<&'static mut T> {
-                if (id as usize) < N {
-                    unsafe { Some(&mut *(self.0[id as usize] as *mut T)) }
+            pub fn get_mut<T: 'static>(&self, id: u8) -> Option<&'static mut T> {
+                let idx = id as usize;
+                if idx < N && TYPES[idx] == core::any::TypeId::of::<T>() {
+                    unsafe { Some(&mut *(self.0[idx] as *mut T)) }
                 } else {
                     None
                 }

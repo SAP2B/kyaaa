@@ -2,8 +2,8 @@
 // Copyright (C) 2026 SAP2B
 
 use kyaaa::Ring;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::thread;
 use std::time::Duration;
 
@@ -73,7 +73,7 @@ fn concurrent_empty_pop_spins() {
 #[test]
 fn index_overflow_wrap_around() {
     let ring = Ring::<i32, 4>::new();
-    
+
     ring.head.0.store(usize::MAX - 1, Ordering::Relaxed);
     ring.tail.0.store(usize::MAX - 1, Ordering::Relaxed);
 
@@ -85,10 +85,10 @@ fn index_overflow_wrap_around() {
 
     assert_eq!(ring.pop(), Some(10));
     assert_eq!(ring.pop(), Some(20));
-    
+
     assert_eq!(ring.push(50), Ok(()));
     assert_eq!(ring.push(60), Ok(()));
-    
+
     assert_eq!(ring.pop(), Some(30));
     assert_eq!(ring.pop(), Some(40));
     assert_eq!(ring.pop(), Some(50));
@@ -99,7 +99,7 @@ fn index_overflow_wrap_around() {
 #[test]
 fn nested_heap_allocations() {
     let ring = Ring::<Vec<Box<usize>>, 4>::new();
-    
+
     ring.push(vec![Box::new(1), Box::new(2)]).unwrap();
     ring.push(vec![Box::new(3)]).unwrap();
 
@@ -109,7 +109,7 @@ fn nested_heap_allocations() {
 
     let v2 = ring.pop().unwrap();
     assert_eq!(*v2[0], 3);
-    
+
     assert_eq!(ring.pop(), None);
 }
 
@@ -120,10 +120,10 @@ fn strict_alignment_types() {
     struct OverAligned(usize);
 
     let ring = Ring::<OverAligned, 2>::new();
-    
+
     ring.push(OverAligned(100)).unwrap();
     ring.push(OverAligned(200)).unwrap();
-    
+
     assert_eq!(ring.pop(), Some(OverAligned(100)));
     assert_eq!(ring.pop(), Some(OverAligned(200)));
 }
@@ -132,7 +132,7 @@ fn strict_alignment_types() {
 fn scoped_thread_concurrency() {
     const CAP: usize = 16;
     const ITERS: usize = 10_000;
-    
+
     let ring = Ring::<usize, CAP>::new();
 
     std::thread::scope(|s| {
@@ -161,17 +161,17 @@ fn scoped_thread_concurrency() {
 #[test]
 fn zst_pointer_arithmetic() {
     let ring = Ring::<(), 8>::new();
-    
+
     for _ in 0..8 {
         assert_eq!(ring.push(()), Ok(()));
     }
-    
+
     assert!(ring.is_full());
-    
+
     for _ in 0..8 {
         assert_eq!(ring.pop(), Some(()));
     }
-    
+
     assert!(ring.is_empty());
 }
 
@@ -196,7 +196,7 @@ fn concurrent_mutability() {
                 loop {
                     if let Some(mut v) = ring.pop() {
                         assert_eq!(v[0], i);
-                        v.push(i * 2); 
+                        v.push(i * 2);
                         assert_eq!(v.len(), 2);
                         break;
                     }
@@ -321,7 +321,6 @@ fn spsc_asymmetric_latencies() {
     producer.join().unwrap();
     consumer.join().unwrap();
 }
-
 
 #[test]
 fn initial_state() {

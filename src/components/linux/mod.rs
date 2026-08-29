@@ -4,5 +4,4 @@
 pub mod disk;
 pub mod io;
 pub mod prelude;
-pub mod ring;
 pub mod thread;

@@ -5,4 +5,4 @@
 
 pub mod components;
 pub use components::book::*;
-pub use components::linux::ring::*;
+pub use components::ring::*;

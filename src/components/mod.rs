@@ -5,3 +5,4 @@ pub mod book;
 pub mod librarian;
 pub mod linux;
 pub mod prelude;
+pub mod ring;

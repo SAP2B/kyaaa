@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0
+// Copyright (C) 2026 SAP2B
+
 use core::cell::UnsafeCell;
 use core::mem::MaybeUninit;
 use core::sync::atomic::{AtomicUsize, Ordering};
@@ -9,6 +12,12 @@ pub struct Ring<T, const N: usize> {
     pub head: CacheLineAligned<AtomicUsize>,
     pub tail: CacheLineAligned<AtomicUsize>,
     pub buffer: UnsafeCell<[MaybeUninit<T>; N]>,
+}
+
+impl<T, const N: usize> Drop for Ring<T, N> {
+    fn drop(&mut self) {
+        while self.pop().is_some() {}
+    }
 }
 
 unsafe impl<T: Send, const N: usize> Sync for Ring<T, N> {}

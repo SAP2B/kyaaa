@@ -54,26 +54,6 @@ fn book_hlist() {
 }
 
 #[test]
-fn book_concurrency() {
-    let hlist = kyaaa::book!(
-        counter => Game { name: "Counter", favorite: false }
-    );
-
-    let h1 = std::thread::spawn(move || {
-        hlist.counter().set().favorite = true;
-    });
-
-    let h2 = std::thread::spawn(move || {
-        let _ = hlist.counter().get();
-    });
-
-    h1.join().unwrap();
-    h2.join().unwrap();
-
-    assert!(hlist.counter().get().favorite);
-}
-
-#[test]
 fn book_out_of_bounds() {
     let hlist = kyaaa::book!(
         item1 => Game { name: "Item1", favorite: true }
@@ -124,8 +104,8 @@ fn book_heterogeneous_indices() {
     assert_eq!(hlist.u2().get().name, "Guest");
 
     assert_eq!(hlist.get::<Game>(0).unwrap().name, "A");
-    assert_eq!(hlist.get::<Game>(1).unwrap().name, "Admin");
-    assert_eq!(hlist.get::<User>(2).unwrap().name, "B");
+    assert_eq!(hlist.get::<User>(1).unwrap().name, "Admin");
+    assert_eq!(hlist.get::<Game>(2).unwrap().name, "B");
     assert_eq!(hlist.get::<User>(3).unwrap().name, "Guest");
 }
 
