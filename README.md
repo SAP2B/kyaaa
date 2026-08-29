@@ -125,12 +125,13 @@ fn black_box<T>(dummy: T) -> T {
 }
 
 ```
-
 ### The Generated Assembly (x86_64)
 
 Notice how the compiler optimizes the entire `hlist` abstraction away. There is no heap allocation (`malloc`), no dynamic dispatch overhead. It compiles directly into raw instruction pointer (`rip`) offsets and direct memory moves:
 
-```asm
+![example assembly x86_64 gameasm.rs](assets/gameasm.png)
+
+```x86asm
 .section .text.gameasm::main,"ax",@progbits
     .p2align    4
 .type    gameasm::main,@function
