@@ -1,8 +1,8 @@
 [package]
 name = "kyaaa"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
-description = "A zero-cost, no_std Heterogeneous List (HList) macro with named fields, surgical mutability, and zero allocation."
+description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
 categories = ["data-structures", "no-std", "embedded", "memory-management"]
 license = "AGPL-3.0-only"
