@@ -1,6 +1,6 @@
 [package]
 name = "kyaaa"
-version = "0.0.9"
+version = "0.1.0"
 edition = "2024"
 description = "A zero-cost, no_std Heterogeneous List (HList) macro with named fields, surgical mutability, and zero allocation."
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -11,6 +11,9 @@ readme = "README.md"
 
 [dependencies]
 
+[dev-dependencies]
+criterion = { version = "0.8", features = ["html_reports"] }
+
 [profile.dev]
 panic = "abort"
 
@@ -20,3 +23,9 @@ panic = "abort"
 lto = true
 codegen-units = 1
 strip = true
+
+
+[[bench]]
+name = "webserver"
+path = "benches/webserver.rs"
+harness = false

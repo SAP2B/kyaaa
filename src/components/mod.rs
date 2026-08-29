@@ -2,6 +2,6 @@
 // Copyright (C) 2026 SAP2B
 
 pub mod book;
+pub mod librarian;
 pub mod linux;
 pub mod prelude;
-pub mod proto;

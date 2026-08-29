@@ -57,12 +57,12 @@ macro_rules! page {
 macro_rules! book {
     ( $( $name:ident => $Type:ident { $($fields:tt)* } ),* $(,)? ) => {{
         #[repr(transparent)]
-        struct __KyaaaSyncCell<T>(core::cell::UnsafeCell<T>);
-        unsafe impl<T> core::marker::Sync for __KyaaaSyncCell<T> {}
+        struct KyaaaSyncCell<T>(core::cell::UnsafeCell<T>);
+        unsafe impl<T> core::marker::Sync for KyaaaSyncCell<T> {}
 
         $(
             #[allow(non_upper_case_globals)]
-            static $name: __KyaaaSyncCell<$Type> = __KyaaaSyncCell(core::cell::UnsafeCell::new($Type { $($fields)* }));
+            static $name: KyaaaSyncCell<$Type> = KyaaaSyncCell(core::cell::UnsafeCell::new($Type { $($fields)* }));
         )*
 
         #[repr(transparent)]
@@ -73,12 +73,26 @@ macro_rules! book {
         unsafe impl<const N: usize> core::marker::Send for Book<N> {}
 
         #[repr(transparent)]
-        pub struct BookRef<T>(pub *mut T);
+        pub struct BookRef<T, const ID: u8>(pub *mut T);
 
-        impl<T: core::marker::Copy> BookRef<T> {
+        #[allow(non_camel_case_types)]
+        #[repr(u8)]
+        enum BookIds {
+            $( $name ),*
+        }
+
+        const N: usize = [ $( core::stringify!($name) ),* ].len();
+        static TYPES: [core::any::TypeId; N] = [ $( core::any::TypeId::of::<$Type>() ),* ];
+
+        impl<T: core::marker::Copy, const ID: u8> BookRef<T, ID> {
             #[inline(always)]
             pub const fn new(ptr: *mut T) -> Self {
                 Self(ptr)
+            }
+
+            #[inline(always)]
+            pub const fn id(&self) -> u8 {
+                ID
             }
 
             #[inline(always)]
@@ -110,6 +124,18 @@ macro_rules! book {
             }
 
             #[inline(always)]
+            pub fn list<T: 'static>(&self) -> impl Iterator<Item = &'static T> + '_ {
+                let target = core::any::TypeId::of::<T>();
+                self.0.iter().zip(TYPES.iter()).filter_map(move |(&ptr, &type_id)| {
+                    if type_id == target {
+                        unsafe { Some(&*(ptr as *const T)) }
+                    } else {
+                        None
+                    }
+                })
+            }
+
+            #[inline(always)]
             pub const fn get<T>(&self, id: u8) -> Option<&'static T> {
                 if (id as usize) < N {
                     unsafe { Some(&*(self.0[id as usize] as *const T)) }
@@ -131,7 +157,7 @@ macro_rules! book {
         impl Book<{ [ $( core::stringify!($name) ),* ].len() }> {
             $(
                 #[inline(always)]
-                pub const fn $name(&self) -> BookRef<$Type> {
+                pub const fn $name(&self) -> BookRef<$Type, { BookIds::$name as u8 }> {
                     BookRef::new($name.0.get())
                 }
             )*
@@ -144,94 +170,3 @@ macro_rules! book {
         ])
     }};
 }
-
-/*
-#[macro_export]
-macro_rules! book {
-    ( $( $name:ident => $Type:ident { $($fields:tt)* } ),* $(,)? ) => {{
-
-        $(
-            #[allow(non_upper_case_globals)]
-static $name: core::cell::SyncUnsafeCell<$Type> = core::cell::SyncUnsafeCell::new($Type { $($fields)* });
-        )*
-
-        #[repr(transparent)]
-        #[derive(Debug, core::marker::Copy, core::clone::Clone)]
-        pub struct Book<const N: usize>(pub [*const (); N]);
-
-        unsafe impl<const N: usize> core::marker::Sync for Book<N> {}
-        unsafe impl<const N: usize> core::marker::Send for Book<N> {}
-
-        #[repr(transparent)]
-        pub struct BookRef<T>(pub *mut T);
-
-        impl<T: core::marker::Copy> BookRef<T> {
-            #[inline(always)]
-            pub const fn new(ptr: *mut T) -> Self {
-                Self(ptr)
-            }
-
-            #[inline(always)]
-            pub const fn get(&self) -> &'static T {
-                unsafe { &*self.0 }
-            }
-
-            #[inline(always)]
-            pub fn update<F>(&self, f: F)
-            where
-            F: FnOnce(T) -> T {
-                unsafe {
-                    *self.0 = f(*self.0);
-                }
-            }
-
-            #[inline(always)]
-            pub const fn set(&self) -> &'static mut T {
-                unsafe {
-                    &mut *self.0
-                }
-            }
-        }
-
-        impl<const N: usize> Book<N> {
-            #[inline(always)]
-            pub const fn new(entries: [*const (); N]) -> Self {
-                Self(entries)
-            }
-
-            #[inline(always)]
-            pub const fn get<T>(&self, id: u8) -> Option<&'static T> {
-                if (id as usize) < N {
-                    unsafe { Some(&*(self.0[id as usize] as *const T)) }
-                } else {
-                    None
-                }
-            }
-
-            #[inline(always)]
-            pub const fn get_mut<T>(&self, id: u8) -> Option<&'static mut T> {
-                if (id as usize) < N {
-                    unsafe { Some(&mut *(self.0[id as usize] as *mut T)) }
-                } else {
-                    None
-                }
-            }
-        }
-
-        impl Book<{ [ $( core::stringify!($name) ),* ].len() }> {
-            $(
-                #[inline(always)]
-                #[allow(static_mut_refs)]
-                pub const fn $name(&self) -> BookRef<$Type> {
-                    BookRef::new(unsafe { (*core::ptr::addr_of!($name)).get() })
-                }
-            )*
-        }
-
-        Book::new([
-            $(
-                core::ptr::addr_of_mut!($name) as *const ()
-            ),*
-        ])
-    }};
-}*/
