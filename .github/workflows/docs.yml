@@ -3,7 +3,7 @@ name: Deploy mdBook
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions:
   contents: write 
