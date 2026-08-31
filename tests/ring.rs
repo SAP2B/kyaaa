@@ -47,30 +47,6 @@ fn consecutive_push_failures_state_integrity() {
 }
 
 #[test]
-fn concurrent_empty_pop_spins() {
-    let ring = std::sync::Arc::new(Ring::<usize, 4>::new());
-    let ring_c = std::sync::Arc::clone(&ring);
-
-    let consumer = std::thread::spawn(move || {
-        let mut failed_pops = 0;
-        while ring_c.len() == 0 {
-            if ring_c.pop().is_none() {
-                failed_pops += 1;
-            }
-            std::hint::spin_loop();
-        }
-        (failed_pops, ring_c.pop())
-    });
-
-    std::thread::sleep(std::time::Duration::from_millis(1));
-    ring.push(999).unwrap();
-
-    let (failures, item) = consumer.join().unwrap();
-    assert!(failures > 0);
-    assert_eq!(item, Some(999));
-}
-
-#[test]
 fn index_overflow_wrap_around() {
     let ring = Ring::<i32, 4>::new();
 

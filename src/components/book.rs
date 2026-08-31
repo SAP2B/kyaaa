@@ -10,15 +10,32 @@ macro_rules! page {
     )*) => {
         $(
             #[repr(C)]
-            #[derive(Debug, Clone, Copy, PartialEq)]
+            #[derive(Debug, Clone, Copy, PartialEq, Default)]
             pub struct $name {
                 $( pub $field_name: $field_type, )*
             }
+
+            const _: () = {
+                let sum_fields_size = 0usize $( + core::mem::size_of::<$field_type>() )*;
+                let struct_size = core::mem::size_of::<$name>();
+                assert!(
+                    struct_size == sum_fields_size,
+                    concat!(
+                        "Padding detected in struct `", stringify!($name),
+                        "`! Sum of field sizes does not match total struct size."
+                    )
+                );
+            };
 
             impl $name {
                 pub const FIELDS: &'static [&'static str] = &[
                     $( stringify!($field_name) ),*
                 ];
+
+                #[inline(always)]
+                pub const fn new() -> Self {
+                    unsafe { core::mem::zeroed() }
+                }
 
                 #[inline(always)]
                 pub const fn to_bytes(&self) -> &[u8] {
@@ -43,8 +60,8 @@ macro_rules! page {
 
                 $(
                     #[inline(always)]
-                    pub const fn $field_name(&mut self, new: $field_type) -> &mut Self {
-                        self.$field_name = new;
+                    pub fn $field_name<V: $crate::KyaaaConstInto<$field_type>>(&mut self, new: V) -> &mut Self {
+                        self.$field_name = $crate::KyaaaConstInto::kyaaa_into(new);
                         self
                     }
                 )*
@@ -55,14 +72,14 @@ macro_rules! page {
 
 #[macro_export]
 macro_rules! book {
-    ( $( $name:ident => $Type:ident { $($fields:tt)* } ),* $(,)? ) => {{
+    ( $( $name:ident => $Type:ident :: new() $( . $field:ident ( $val:expr ) )* ),* $(,)? ) => {{
         #[repr(transparent)]
         struct KyaaaSyncCell<T>(core::cell::UnsafeCell<T>);
         unsafe impl<T> core::marker::Sync for KyaaaSyncCell<T> {}
 
         $(
             #[allow(non_upper_case_globals)]
-            static $name: KyaaaSyncCell<$Type> = KyaaaSyncCell(core::cell::UnsafeCell::new($Type { $($fields)* }));
+            static $name: KyaaaSyncCell<$Type> = KyaaaSyncCell(core::cell::UnsafeCell::new($Type::new()));
         )*
 
         #[repr(transparent)]
@@ -101,19 +118,8 @@ macro_rules! book {
             }
 
             #[inline(always)]
-            pub fn update<F>(&self, f: F)
-            where
-                F: FnOnce(T) -> T {
-                unsafe {
-                    *self.0 = f(*self.0);
-                }
-            }
-
-            #[inline(always)]
-            pub const fn set(&self) -> &'static mut T {
-                unsafe {
-                    &mut *self.0
-                }
+            pub fn set(&self) -> &'static mut T {
+                unsafe { &mut *self.0 }
             }
         }
 
@@ -164,6 +170,14 @@ macro_rules! book {
                 }
             )*
         }
+
+        $(
+            unsafe {
+                let mut tmp = $Type::new();
+                tmp $( .$field($val) )*;
+                *$name.0.get() = tmp;
+            }
+        )*
 
         Book::new([
             $(

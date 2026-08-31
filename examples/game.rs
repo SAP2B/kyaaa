@@ -1,39 +1,44 @@
+// SPDX-License-Identifier: AGPL-3.0
+// Copyright (C) 2026 SAP2B
+
+use colorful::{Colorful, HSL};
+
 kyaaa::page!(
     struct Game {
-        name: &'static str,
+        name: kyaaa::Str<32>,
         favorite: bool,
     }
     struct User {
-        name: &'static str,
+        name: kyaaa::Str<32>,
     }
 );
 
+trait Hsl: Colorful + Sized {
+    fn print_hsl(self) {
+        let msg = self.gradient_with_color(HSL::new(0.0, 1.0, 0.5), HSL::new(0.833, 1.0, 0.5));
+        println!("{msg}");
+    }
+}
+
+impl Hsl for String {}
+impl Hsl for &str {}
+
 fn main() {
     let hlist = kyaaa::book!(
-        zelda => Game { name: "Zelda", favorite: true },
-        nier => Game { name: "Nier Automata", favorite: true },
-        lol => Game { name: "League of Legends", favorite: false },
-        sap => User { name: "SAP2B" }
+        zelda => Game::new().name("Zelda").favorite(true),
+        nier  => Game::new().name("Nier Automata").favorite(true),
+        lol   => Game::new().name("League of Legends").favorite(false),
+        sap   => User::new().name("SAP2B")
     );
 
     let before_hlist = [hlist.zelda().get(), hlist.nier().get(), hlist.lol().get()];
     let sap = hlist.sap().get();
 
-    println!("Before Book: {hlist:?} -> {before_hlist:#?}, {sap:#?}");
-
-    hlist.zelda().set().name("New Zelda");
-    hlist.nier().set().name("New Nier Automata");
-    hlist
-        .lol()
-        .update(|mut game| *game.name("cs2").favorite(true));
+    format!("Before Book: {hlist:?} -> {before_hlist:#?}, {sap:#?}").print_hsl();
+    hlist.zelda().set().name("New Zelda").favorite(true);
+    hlist.nier().set().name("New Nier Automata").favorite(true);
+    hlist.lol().set().name("cs2").favorite(true);
 
     let after_hlist = [hlist.zelda().get(), hlist.nier().get(), hlist.lol().get()];
-
-    println!("After Book: {hlist:?} -> {after_hlist:#?}, {sap:#?}");
+    format!("After Book: {hlist:?} -> {after_hlist:#?}, {sap:#?}").print_hsl();
 }
-
-/*
-#[inline(always)]
-fn black_box<T>(dummy: T) -> T {
-    core::hint::black_box(dummy)
-}*/

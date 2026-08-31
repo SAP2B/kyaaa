@@ -13,6 +13,7 @@ readme = "README.md"
 
 [dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }
+colorful = "0.3.2"
 
 [profile.dev]
 panic = "abort"

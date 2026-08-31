@@ -1,209 +1,181 @@
 // SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-kyaaa::page!(
+use kyaaa::{book, page};
+
+page!(
     struct Game {
-        name: &'static str,
+        name: kyaaa::Str<32>,
         favorite: bool,
     }
     struct User {
-        name: &'static str,
+        name: kyaaa::Str<32>,
     }
 );
 
 #[test]
-fn book_hlist() {
-    let hlist = kyaaa::book!(
-        zelda => Game { name: "Zelda", favorite: true },
-        nier => Game { name: "Nier Automata", favorite: true },
-        lol => Game { name: "League of Legends", favorite: false },
-        sap => User { name: "SAP2B" }
+fn page_struct_zeroed_memory_and_padding() {
+    let game = Game::new();
+    let bytes = game.to_bytes();
+
+    assert_eq!(bytes.len(), std::mem::size_of::<Game>());
+    assert!(bytes.iter().all(|&b| b == 0));
+}
+
+#[test]
+fn book_ids_sequential_assignment() {
+    let hlist = book!(
+        first  => Game::new(),
+        second => User::new(),
+        third  => Game::new()
     );
 
-    assert_eq!(hlist.list::<Game>().count(), 3);
-    assert!(hlist.list::<User>().eq([hlist.sap().get()]));
-    assert_eq!(hlist.list::<User>().next().unwrap(), hlist.sap().get());
-    assert_eq!(hlist.zelda().get(), hlist.get::<Game>(0).unwrap());
-    assert_eq!(hlist.nier().get(), hlist.get::<Game>(1).unwrap());
-    assert_eq!(hlist.lol().get(), hlist.get::<Game>(2).unwrap());
-    assert_eq!(hlist.sap().get(), hlist.get::<User>(3).unwrap());
+    assert_eq!(hlist.first().id(), 0);
+    assert_eq!(hlist.second().id(), 1);
+    assert_eq!(hlist.third().id(), 2);
+}
 
-    hlist.zelda().set().name = "New Zelda";
-    hlist.nier().set().name = "New Nier Automata";
-    hlist.sap().set().name = "New SAP";
+#[test]
+fn book_multiple_entries_same_type() {
+    let hlist = book!(
+        g1 => Game::new().name("G1"),
+        g2 => Game::new().name("G2")
+    );
 
-    hlist.lol().update(|mut game| {
-        game.name = "cs2";
-        game.favorite = true;
-        game
-    });
+    let games: Vec<&'static Game> = hlist.list::<Game>().collect();
+    assert_eq!(games.len(), 2);
+    assert_eq!(hlist.g1().get().name, games[0].name);
+    assert_eq!(hlist.g2().get().name, games[1].name);
+}
+
+#[test]
+fn page_bytes_roundtrip_identity() {
+    let mut original = Game::new();
+    original.name("Elden Ring").favorite(true);
+
+    let bytes = original.to_bytes();
+    let (restored, _) = Game::from_bytes(bytes).unwrap();
+    let double_bytes = restored.to_bytes();
+
+    assert_eq!(bytes, double_bytes);
+}
+
+#[test]
+fn page_struct_derived_traits() {
+    let default_game = Game::default();
+    assert_eq!(default_game.favorite, false);
+
+    let mut game1 = Game::new();
+    game1.name("Mario").favorite(true);
+
+    let game2 = game1.clone();
+    let game3 = game1;
+
+    assert_eq!(game1, game2);
+    assert_eq!(game2, game3);
+}
+
+#[test]
+fn page_from_bytes_with_remainder() {
+    let mut original = Game::new();
+    original.name("Tetris").favorite(true);
+
+    let mut bytes = original.to_bytes().to_vec();
+    bytes.extend_from_slice(&[0xFF, 0xEE, 0xDD]);
+
+    let (restored, rest) = Game::from_bytes(&bytes).unwrap();
+
+    assert_eq!(original.name, restored.name);
+    assert_eq!(original.favorite, restored.favorite);
+    assert_eq!(rest, &[0xFF, 0xEE, 0xDD]);
+}
+
+#[test]
+fn book_dynamic_get_mut() {
+    let hlist = book!(
+        player1 => User::new().name("P1"),
+        player2 => User::new().name("P2")
+    );
+
+    let p1_id = hlist.player1().id();
+
+    let mut_user = hlist.get_mut::<User>(p1_id).unwrap();
+    mut_user.name("P1_Edited");
 
     assert_eq!(
-        hlist.get::<Game>(hlist.zelda().id()).unwrap(),
-        hlist.get::<Game>(0).unwrap()
+        hlist.player1().get().name,
+        hlist.get::<User>(p1_id).unwrap().name
     );
-    assert_eq!(hlist.zelda().get().name, "New Zelda");
-    assert_eq!(hlist.zelda().get(), hlist.get::<Game>(0).unwrap());
-    assert_eq!(hlist.nier().get().name, "New Nier Automata");
-    assert_eq!(hlist.nier().get(), hlist.get::<Game>(1).unwrap());
-    assert_eq!(hlist.lol().get().name, "cs2");
-    assert!(hlist.lol().get().favorite);
-    assert_eq!(hlist.lol().get(), hlist.get::<Game>(2).unwrap());
-    assert_eq!(hlist.sap().get().name, "New SAP");
-    assert_eq!(hlist.sap().get(), hlist.get::<User>(3).unwrap());
 }
 
 #[test]
-fn book_out_of_bounds() {
-    let hlist = kyaaa::book!(
-        item1 => Game { name: "Item1", favorite: true }
+fn book_invalid_id_access() {
+    let hlist = book!(
+        solo => User::new().name("Lonely")
     );
 
-    assert!(hlist.get::<Game>(0).is_some());
-    assert!(hlist.get::<Game>(1).is_none());
-    assert!(hlist.get_mut::<Game>(99).is_none());
-}
+    let invalid_id = 99;
 
-kyaaa::page! {
-    struct Player {
-        id: u64,
-        score: u32,
-    }
+    assert!(hlist.get::<User>(invalid_id).is_none());
+    assert!(hlist.get_mut::<User>(invalid_id).is_none());
 }
 
 #[test]
-fn book_with_page_types() {
-    let hlist = kyaaa::book!(
-        p1 => Player { id: 1, score: 100 },
-        p2 => Player { id: 2, score: 200 }
-    );
+fn page_struct_methods() {
+    let mut game = Game::new();
+    game.name("Zelda").favorite(true);
 
-    assert_eq!(hlist.p1().get().id, 1);
-    assert_eq!(hlist.p2().get().score, 200);
-
-    hlist.p1().set().score(150);
-    assert_eq!(hlist.p1().get().score, 150);
-
-    let bytes = hlist.p1().get().to_bytes();
-    let (decoded, _) = Player::from_bytes(bytes).unwrap();
-    assert_eq!(decoded.score, 150);
+    assert_eq!(game.favorite, true);
+    assert_eq!(Game::FIELDS, &["name", "favorite"]);
 }
 
 #[test]
-fn book_heterogeneous_indices() {
-    let hlist = kyaaa::book!(
-        g1 => Game { name: "A", favorite: true },
-        u1 => User { name: "Admin" },
-        g2 => Game { name: "B", favorite: false },
-        u2 => User { name: "Guest" }
-    );
+fn page_bytes_conversion() {
+    let mut original = User::new();
+    original.name("admin");
 
-    assert_eq!(hlist.g1().get().name, "A");
-    assert_eq!(hlist.g2().get().name, "B");
-    assert_eq!(hlist.u1().get().name, "Admin");
-    assert_eq!(hlist.u2().get().name, "Guest");
+    let bytes = original.to_bytes();
+    let (restored, rest) = User::from_bytes(bytes).unwrap();
 
-    assert_eq!(hlist.get::<Game>(0).unwrap().name, "A");
-    assert_eq!(hlist.get::<User>(1).unwrap().name, "Admin");
-    assert_eq!(hlist.get::<Game>(2).unwrap().name, "B");
-    assert_eq!(hlist.get::<User>(3).unwrap().name, "Guest");
-}
-
-#[test]
-fn book_ref_update() {
-    let hlist = kyaaa::book!(
-        item => Game { name: "Original", favorite: false }
-    );
-
-    hlist.item().update(|mut g| {
-        g.name = "Updated";
-        g.favorite = true;
-        g
-    });
-
-    assert_eq!(hlist.item().get().name, "Updated");
-    assert!(hlist.item().get().favorite);
-}
-
-#[test]
-fn page_serialization_bounds() {
-    kyaaa::page! {
-        struct Packet {
-            code: u32,
-            flag: u8,
-        }
-    }
-
-    let p = Packet { code: 42, flag: 1 };
-    let bytes = p.to_bytes();
-
-    let truncated = &bytes[0..bytes.len() - 1];
-    assert!(Packet::from_bytes(truncated).is_none());
-
-    let (decoded, rest) = Packet::from_bytes(bytes).unwrap();
-    assert_eq!(decoded.code, 42);
-    assert_eq!(decoded.flag, 1);
+    assert_eq!(original.name, restored.name);
     assert!(rest.is_empty());
 }
 
 #[test]
-fn book_zero_sized_types() {
-    kyaaa::page! {
-        struct Empty {}
-    }
+fn page_from_bytes_insufficient_length() {
+    let empty_bytes: &[u8] = &[];
+    assert!(User::from_bytes(empty_bytes).is_none());
+}
 
-    let hlist = kyaaa::book!(
-        e1 => Empty {}
+#[test]
+fn book_static_references_and_mutation() {
+    let hlist = book!(
+        zelda => Game::new().name("Zelda").favorite(true),
+        admin => User::new().name("admin")
     );
 
-    assert!(hlist.get::<Empty>(0).is_some());
-    assert!(hlist.get::<Empty>(1).is_none());
+    assert_eq!(hlist.zelda().get().favorite, true);
+
+    hlist.zelda().set().favorite(false);
+    assert_eq!(hlist.zelda().get().favorite, false);
 }
 
 #[test]
-fn page_exact_byte_layout() {
-    kyaaa::page! {
-        struct Header {
-            magic: u16,
-            version: u8,
-            length: u32,
-        }
-    }
+fn book_dynamic_methods() {
+    let hlist = book!(
+        zelda => Game::new().name("Zelda").favorite(true),
+        sap   => User::new().name("SAP2B"),
+        nier  => Game::new().name("Nier Automata").favorite(false)
+    );
 
-    let h = Header {
-        magic: 0x55AA,
-        version: 1,
-        length: 1024,
-    };
-    let bytes = h.to_bytes();
-    assert_eq!(bytes.len(), core::mem::size_of::<Header>());
+    let games: Vec<&'static Game> = hlist.list::<Game>().collect();
+    assert_eq!(games.len(), 2);
+    assert_eq!(games[0].favorite, true);
+    assert_eq!(games[1].favorite, false);
 
-    let (parsed, rest) = Header::from_bytes(bytes).unwrap();
-    assert_eq!(parsed.magic, 0x55AA);
-    assert_eq!(parsed.version, 1);
-    assert_eq!(parsed.length, 1024);
-    assert!(rest.is_empty());
-}
+    let user_id = hlist.sap().id();
+    let fetched_user = hlist.get::<User>(user_id).unwrap();
+    assert_eq!(fetched_user.name, hlist.sap().get().name);
 
-#[test]
-fn page_stream_consumption() {
-    kyaaa::page! {
-        struct Chunk {
-            id: u32,
-        }
-    }
-
-    let mut buffer = [0u8; 12];
-    buffer[0..4].copy_from_slice(&10_u32.to_ne_bytes());
-    buffer[4..8].copy_from_slice(&20_u32.to_ne_bytes());
-    buffer[8..12].copy_from_slice(&30_u32.to_ne_bytes());
-
-    let (p1, rest1) = Chunk::from_bytes(&buffer).unwrap();
-    let (p2, rest2) = Chunk::from_bytes(rest1).unwrap();
-    let (p3, rest3) = Chunk::from_bytes(rest2).unwrap();
-
-    assert_eq!(p1.id, 10);
-    assert_eq!(p2.id, 20);
-    assert_eq!(p3.id, 30);
-    assert!(rest3.is_empty());
+    assert!(hlist.get::<Game>(user_id).is_none());
 }
