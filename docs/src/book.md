@@ -13,7 +13,6 @@
 #### cargo run
  ![examples/game.rs](./assets/game.png)
 
-
 ### gameasm.rs
 
 ```rust
