@@ -22,6 +22,16 @@
 ```bash
 cargo asm --example gameasm --release gameasm::main
 ```
+```toml
+# Cargo.toml
+
+[profile.release]
+opt-level = 3
+panic = "abort"
+lto = true
+codegen-units = 1
+strip = true
+```
 #### output
 ![examples/gameasm.rs](./assets/gameasm.png)
 
