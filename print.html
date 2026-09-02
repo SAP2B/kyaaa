@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-32b732fc.js";
+            window.path_to_searchindex_js = "searchindex-b7ef78ec.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-e0243e99.js"></script>
@@ -337,6 +337,15 @@ fn black_box&lt;T&gt;(dummy: T) -&gt; T {
 }</code></pre>
 <h4 id="assembly-proof"><a class="header" href="#assembly-proof">assembly proof</a></h4>
 <pre><code class="language-bash">cargo asm --example gameasm --release gameasm::main
+</code></pre>
+<pre><code class="language-toml"># Cargo.toml
+
+[profile.release]
+opt-level = 3
+panic = "abort"
+lto = true
+codegen-units = 1
+strip = true
 </code></pre>
 <h4 id="output"><a class="header" href="#output">output</a></h4>
 <p><label class="checkbox-label"><input class="checkbox-img" type="checkbox"><img src="assets/gameasm.png" alt="examples/gameasm.rs"><span class="img-wrapper"><img src="assets/gameasm.png" alt="examples/gameasm.rs"></span></label></p>
