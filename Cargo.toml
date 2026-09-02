@@ -1,6 +1,6 @@
 [package]
 name = "kyaaa"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]

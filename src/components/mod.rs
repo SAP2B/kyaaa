@@ -3,6 +3,7 @@
 
 pub mod book;
 pub mod librarian;
+pub mod page;
 pub mod prelude;
 pub mod ring;
 pub mod types;

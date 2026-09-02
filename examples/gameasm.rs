@@ -1,20 +1,27 @@
 // SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-kyaaa::page!(
+use kyaaa::{Str, book, page};
+
+page!(
     struct Game {
-        name: kyaaa::Str<32>,
+        name: Str<32>,
         favorite: bool,
     }
     struct User {
-        name: kyaaa::Str<32>,
+        name: Str<32>,
     }
 );
 
 fn main() {
-    let hlist = kyaaa::book!(
-        nier  => Game::new().name("Nier Automata").favorite(true),
-        sap   => User::new().name("SAP2B"),
+    let hlist = book!(
+        nier => Game {
+            name: Str::from_str("Nier Automata"),
+            favorite: true,
+        },
+        sap => User {
+            name: Str::from_str("SAP2B"),
+        },
     );
 
     hlist.nier().set().name("NiER Automata").favorite(true);

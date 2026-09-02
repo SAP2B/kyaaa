@@ -53,7 +53,7 @@ fn main() {
     )
     .print_hsl();
 
-    let mut h = Header::new();
+    let mut h = Header::default();
     h.length(1024).magic(0x55AA).version(1).pad(0);
 
     let header_bytes = h.to_bytes();
@@ -64,7 +64,7 @@ fn main() {
     )
     .print_hsl();
 
-    let mut g = Game::new();
+    let mut g = Game::default();
     g.name("Zelda").favorite(true);
 
     let game_bytes = g.to_bytes();

@@ -5,5 +5,6 @@
 
 pub mod components;
 pub use components::book::*;
+pub use components::page::*;
 pub use components::ring::*;
 pub use components::types::*;

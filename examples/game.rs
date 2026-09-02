@@ -2,14 +2,15 @@
 // Copyright (C) 2026 SAP2B
 
 use colorful::{Colorful, HSL};
+use kyaaa::Str;
 
 kyaaa::page!(
     struct Game {
-        name: kyaaa::Str<32>,
+        name: Str<32>,
         favorite: bool,
     }
     struct User {
-        name: kyaaa::Str<32>,
+        name: Str<32>,
     }
 );
 
@@ -25,16 +26,28 @@ impl Hsl for &str {}
 
 fn main() {
     let hlist = kyaaa::book!(
-        zelda => Game::new().name("Zelda").favorite(true),
-        nier  => Game::new().name("Nier Automata").favorite(true),
-        lol   => Game::new().name("League of Legends").favorite(false),
-        sap   => User::new().name("SAP2B")
+        zelda => Game {
+            name: Str::from_str("Zelda"),
+            favorite: true,
+        },
+        nier => Game {
+            name: Str::from_str("Nier Automata"),
+            favorite: true,
+        },
+        lol => Game {
+            name: Str::from_str("League of Legends"),
+            favorite: false,
+        },
+        sap => User {
+            name: Str::from_str("SAP2B"),
+        }
     );
 
     let before_hlist = [hlist.zelda().get(), hlist.nier().get(), hlist.lol().get()];
     let sap = hlist.sap().get();
 
     format!("Before Book: {hlist:?} -> {before_hlist:#?}, {sap:#?}").print_hsl();
+
     hlist.zelda().set().name("New Zelda").favorite(true);
     hlist.nier().set().name("New Nier Automata").favorite(true);
     hlist.lol().set().name("cs2").favorite(true);
