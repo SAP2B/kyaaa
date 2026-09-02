@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-ada6e29c.js";
+            window.path_to_searchindex_js = "searchindex-32b732fc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-e0243e99.js"></script>
@@ -179,27 +179,39 @@
 <pre class="playground"><code class="language-rust">// SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-use kyaaa::{book, page};
+use kyaaa::{Str, book, page};
 
 // 1. Schemas defined via page!
 page!(
     struct Dog {
-        name: kyaaa::Str&lt;16&gt;,
+        name: Str&lt;16&gt;,
         age: u8,
     }
     struct Cat {
-        name: kyaaa::Str&lt;16&gt;,
+        name: Str&lt;16&gt;,
         age: u8,
     }
 );
 
 fn main() {
-    // 2. Heterogeneous registry with 2 Dogs and 2 Cats
+    // 2. Heterogeneous registry with 2 Dogs and 2 Cats using struct literals
     let shelter = book!(
-        dog1 =&gt; Dog::new().name("Rex").age(3),
-        dog2 =&gt; Dog::new().name("Thor").age(5),
-        cat1 =&gt; Cat::new().name("Luna").age(2),
-        cat2 =&gt; Cat::new().name("Mina").age(1)
+        dog1 =&gt; Dog {
+            name: Str::from_str("Rex"),
+            age: 3,
+        },
+        dog2 =&gt; Dog {
+            name: Str::from_str("Thor"),
+            age: 5,
+        },
+        cat1 =&gt; Cat {
+            name: Str::from_str("Luna"),
+            age: 2,
+        },
+        cat2 =&gt; Cat {
+            name: Str::from_str("Mina"),
+            age: 1,
+        }
     );
 
     // 3. Direct access to all 4 elements via generated tokens
@@ -208,7 +220,7 @@ fn main() {
     assert_eq!(shelter.cat1().get().age, 2);
     assert_eq!(shelter.cat2().get().age, 1);
 
-    // 4. Safe mutation on specific instances
+    // 4. Safe mutation on specific instances (setters continue working via KyaaaConstInto)
     shelter.cat1().set().age(3); // Luna had a birthday!
     shelter.dog2().set().age(6); // Thor had a birthday!
 
@@ -230,14 +242,15 @@ fn main() {
 // Copyright (C) 2026 SAP2B
 
 use colorful::{Colorful, HSL};
+use kyaaa::Str;
 
 kyaaa::page!(
     struct Game {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
         favorite: bool,
     }
     struct User {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
     }
 );
 
@@ -253,16 +266,28 @@ impl Hsl for &amp;str {}
 
 fn main() {
     let hlist = kyaaa::book!(
-        zelda =&gt; Game::new().name("Zelda").favorite(true),
-        nier  =&gt; Game::new().name("Nier Automata").favorite(true),
-        lol   =&gt; Game::new().name("League of Legends").favorite(false),
-        sap   =&gt; User::new().name("SAP2B")
+        zelda =&gt; Game {
+            name: Str::from_str("Zelda"),
+            favorite: true,
+        },
+        nier =&gt; Game {
+            name: Str::from_str("Nier Automata"),
+            favorite: true,
+        },
+        lol =&gt; Game {
+            name: Str::from_str("League of Legends"),
+            favorite: false,
+        },
+        sap =&gt; User {
+            name: Str::from_str("SAP2B"),
+        }
     );
 
     let before_hlist = [hlist.zelda().get(), hlist.nier().get(), hlist.lol().get()];
     let sap = hlist.sap().get();
 
     format!("Before Book: {hlist:?} -&gt; {before_hlist:#?}, {sap:#?}").print_hsl();
+
     hlist.zelda().set().name("New Zelda").favorite(true);
     hlist.nier().set().name("New Nier Automata").favorite(true);
     hlist.lol().set().name("cs2").favorite(true);
@@ -276,20 +301,27 @@ fn main() {
 <pre class="playground"><code class="language-rust">// SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-kyaaa::page!(
+use kyaaa::{Str, book, page};
+
+page!(
     struct Game {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
         favorite: bool,
     }
     struct User {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
     }
 );
 
 fn main() {
-    let hlist = kyaaa::book!(
-        nier  =&gt; Game::new().name("Nier Automata").favorite(true),
-        sap   =&gt; User::new().name("SAP2B"),
+    let hlist = book!(
+        nier =&gt; Game {
+            name: Str::from_str("Nier Automata"),
+            favorite: true,
+        },
+        sap =&gt; User {
+            name: Str::from_str("SAP2B"),
+        },
     );
 
     hlist.nier().set().name("NiER Automata").favorite(true);
@@ -311,21 +343,21 @@ fn black_box&lt;T&gt;(dummy: T) -&gt; T {
 <pre><code class="language-rs">// SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-use kyaaa::{book, page};
+use kyaaa::{Str, book, page};
 
 page!(
     struct Game {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
         favorite: bool,
     }
     struct User {
-        name: kyaaa::Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
     }
 );
 
 #[test]
 fn page_struct_zeroed_memory_and_padding() {
-    let game = Game::new();
+    let game = Game::default();
     let bytes = game.to_bytes();
 
     assert_eq!(bytes.len(), std::mem::size_of::&lt;Game&gt;());
@@ -335,9 +367,9 @@ fn page_struct_zeroed_memory_and_padding() {
 #[test]
 fn book_ids_sequential_assignment() {
     let hlist = book!(
-        first  =&gt; Game::new(),
-        second =&gt; User::new(),
-        third  =&gt; Game::new()
+        first  =&gt; Game { name: Str::empty(), favorite: false },
+        second =&gt; User { name: Str::empty() },
+        third  =&gt; Game { name: Str::empty(), favorite: false }
     );
 
     assert_eq!(hlist.first().id(), 0);
@@ -348,9 +380,12 @@ fn book_ids_sequential_assignment() {
 #[test]
 fn book_multiple_entries_same_type() {
     let hlist = book!(
-        g1 =&gt; Game::new().name("G1"),
-        g2 =&gt; Game::new().name("G2")
+        g1 =&gt; Game { name: Str::empty(), favorite: false },
+        g2 =&gt; Game { name: Str::empty(), favorite: false }
     );
+
+    hlist.g1().set().name("G1");
+    hlist.g2().set().name("G2");
 
     let games: Vec&lt;&amp;'static Game&gt; = hlist.list::&lt;Game&gt;().collect();
     assert_eq!(games.len(), 2);
@@ -360,7 +395,7 @@ fn book_multiple_entries_same_type() {
 
 #[test]
 fn page_bytes_roundtrip_identity() {
-    let mut original = Game::new();
+    let mut original = Game::default();
     original.name("Elden Ring").favorite(true);
 
     let bytes = original.to_bytes();
@@ -375,10 +410,10 @@ fn page_struct_derived_traits() {
     let default_game = Game::default();
     assert_eq!(default_game.favorite, false);
 
-    let mut game1 = Game::new();
+    let mut game1 = Game::default();
     game1.name("Mario").favorite(true);
 
-    let game2 = game1.clone();
+    let game2 = game1;
     let game3 = game1;
 
     assert_eq!(game1, game2);
@@ -387,7 +422,7 @@ fn page_struct_derived_traits() {
 
 #[test]
 fn page_from_bytes_with_remainder() {
-    let mut original = Game::new();
+    let mut original = Game::default();
     original.name("Tetris").favorite(true);
 
     let mut bytes = original.to_bytes().to_vec();
@@ -403,9 +438,12 @@ fn page_from_bytes_with_remainder() {
 #[test]
 fn book_dynamic_get_mut() {
     let hlist = book!(
-        player1 =&gt; User::new().name("P1"),
-        player2 =&gt; User::new().name("P2")
+        player1 =&gt; User { name: Str::empty() },
+        player2 =&gt; User { name: Str::empty() }
     );
+
+    hlist.player1().set().name("P1");
+    hlist.player2().set().name("P2");
 
     let p1_id = hlist.player1().id();
 
@@ -421,7 +459,7 @@ fn book_dynamic_get_mut() {
 #[test]
 fn book_invalid_id_access() {
     let hlist = book!(
-        solo =&gt; User::new().name("Lonely")
+        solo =&gt; User { name: Str::empty() }
     );
 
     let invalid_id = 99;
@@ -432,7 +470,7 @@ fn book_invalid_id_access() {
 
 #[test]
 fn page_struct_methods() {
-    let mut game = Game::new();
+    let mut game = Game::default();
     game.name("Zelda").favorite(true);
 
     assert_eq!(game.favorite, true);
@@ -441,7 +479,7 @@ fn page_struct_methods() {
 
 #[test]
 fn page_bytes_conversion() {
-    let mut original = User::new();
+    let mut original = User::default();
     original.name("admin");
 
     let bytes = original.to_bytes();
@@ -460,9 +498,12 @@ fn page_from_bytes_insufficient_length() {
 #[test]
 fn book_static_references_and_mutation() {
     let hlist = book!(
-        zelda =&gt; Game::new().name("Zelda").favorite(true),
-        admin =&gt; User::new().name("admin")
+        zelda =&gt; Game { name: Str::empty(), favorite: false },
+        admin =&gt; User { name: Str::empty() }
     );
+
+    hlist.zelda().set().name("Zelda").favorite(true);
+    hlist.admin().set().name("admin");
 
     assert_eq!(hlist.zelda().get().favorite, true);
 
@@ -473,10 +514,14 @@ fn book_static_references_and_mutation() {
 #[test]
 fn book_dynamic_methods() {
     let hlist = book!(
-        zelda =&gt; Game::new().name("Zelda").favorite(true),
-        sap   =&gt; User::new().name("SAP2B"),
-        nier  =&gt; Game::new().name("Nier Automata").favorite(false)
+        zelda =&gt; Game { name: Str::empty(), favorite: false },
+        sap   =&gt; User { name: Str::empty() },
+        nier  =&gt; Game { name: Str::empty(), favorite: false }
     );
+
+    hlist.zelda().set().name("Zelda").favorite(true);
+    hlist.sap().set().name("SAP2B");
+    hlist.nier().set().name("Nier Automata").favorite(false);
 
     let games: Vec&lt;&amp;'static Game&gt; = hlist.list::&lt;Game&gt;().collect();
     assert_eq!(games.len(), 2);
