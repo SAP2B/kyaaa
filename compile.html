@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b7ef78ec.js";
+            window.path_to_searchindex_js = "searchindex-4b4e9b4b.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-e0243e99.js"></script>
@@ -177,7 +177,7 @@
                         <h1 id="compile"><a class="header" href="#compile">Compile</a></h1>
 <pre><code class="language-toml">[package]
 name = "kyaaa"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -189,8 +189,6 @@ readme = "README.md"
 [dependencies]
 
 [dev-dependencies]
-criterion = { version = "0.8", features = ["html_reports"] }
-colorful = "0.3.2"
 
 [profile.dev]
 panic = "abort"
@@ -202,11 +200,6 @@ lto = true
 codegen-units = 1
 strip = true
 
-
-[[bench]]
-name = "webserver"
-path = "benches/webserver.rs"
-harness = false
 </code></pre>
 
                     </main>
