@@ -1,0 +1,12 @@
+[build]
+target = "x86_64-unknown-none"
+
+[target.x86_64-unknown-none]
+rustflags = [
+    "-C", "target-cpu=native",
+    "-C", "code-model=kernel",
+    "-C", "relocation-model=static",
+    "-C", "default-linker-libraries=no",
+    "-C", "llvm-args=-inline-threshold=1000",
+    "-C", "force-frame-pointers=off",
+]

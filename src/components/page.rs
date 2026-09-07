@@ -4,33 +4,31 @@
 #[macro_export]
 macro_rules! page {
     ($(
-        struct $name:ident {
+        align($align:expr) struct $name:ident {
             $( $field_name:ident : $field_type:ty ),* $(,)?
         }
     )*) => {
         $(
-            #[repr(C)]
-            #[derive(Debug, Clone, Copy, PartialEq, Default)]
+            #[repr(C, align($align))]
+            #[derive(Debug, PartialEq, Eq)]
             pub struct $name {
                 $( pub $field_name: $field_type, )*
             }
 
             const _: () = {
-                let sum_fields_size = 0usize $( + core::mem::size_of::<$field_type>() )*;
+                let declared_align = $align;
                 let struct_size = core::mem::size_of::<$name>();
+
                 assert!(
-                    struct_size == sum_fields_size,
+                    struct_size % declared_align == 0,
                     concat!(
-                        "Padding detected in struct `", stringify!($name),
-                        "`! Sum of field sizes does not match total struct size."
+                        "Alignment mismatch in struct `", stringify!($name),
+                        "`! Total struct size must be a multiple of the declared alignment."
                     )
                 );
             };
 
             impl $name {
-                pub const FIELDS: &'static [&'static str] = &[
-                    $( stringify!($field_name) ),*
-                ];
 
                 #[inline(always)]
                 pub const fn to_bytes(&self) -> &[u8] {
@@ -41,6 +39,7 @@ macro_rules! page {
                         )
                     }
                 }
+
 
                 #[inline(always)]
                 pub const fn from_bytes(input: &[u8]) -> Option<(Self, &[u8])> {
@@ -55,8 +54,8 @@ macro_rules! page {
 
                 $(
                     #[inline(always)]
-                    pub fn $field_name<V: $crate::KyaaaConstInto<$field_type>>(&mut self, new: V) -> &mut Self {
-                        self.$field_name = $crate::KyaaaConstInto::kyaaa_into(new);
+                    pub fn $field_name<V: $crate::KyaaaAssign<$field_type>>(&mut self, new: V) -> &mut Self {
+                        $crate::KyaaaAssign::assign_to(new, &mut self.$field_name);
                         self
                     }
                 )*

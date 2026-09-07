@@ -2,8 +2,8 @@
 // Copyright (C) 2026 SAP2B
 
 pub mod book;
-pub mod librarian;
+pub mod io;
 pub mod page;
 pub mod prelude;
-pub mod ring;
+pub mod syscall;
 pub mod types;

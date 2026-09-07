@@ -8,13 +8,13 @@ use core::arch::naked_asm;
 use kyaaa::*;
 
 page!(
-    align(32) struct Game {
-        id: Str<32>,
+    align(64) struct Game {
+        id: Str<64>,
         name: Str<32>,
     }
 
-    align(32) struct User {
-        id: Str<32>,
+    align(64) struct User {
+        id: Str<64>,
         name: Str<32>,
     }
 );
@@ -45,20 +45,33 @@ pub extern "C" fn _start() -> ! {
 pub extern "C" fn k_main(_sp: *const usize) -> i32 {
     let hlist = book!(
         nier => Game {
-            id: Str::from_str("123456789012345678901234"),
+            id: Str::from_str("023456789012345678901234"),
             name: Str::from_str("LOL"),
         },
         sap => User {
             id: Str::from_str("123456789012345678901234"),
             name: Str::from_str("SAP2B"),
         },
+        admin =>  User {
+            id: Str::from_str("223456789012345678901234"),
+            name: Str::from_str("Admin"),
+        },
     );
 
     hlist.nier().set().name("NieR Automata");
     hlist.sap().set().name("SAP2B HFT");
+    hlist.admin().set().name("SAP2B Admin");
+
+    let original_admin = hlist.admin().get();
+    let badmin = original_admin.to_bytes();
+    
+    let (parsed_admin, _rest) = User::from_bytes(badmin).expect("failed to parse user bytes");
+    assert_eq!(*original_admin, parsed_admin);
 
     black_box(hlist.nier().get());
     black_box(hlist.sap().get());
+    black_box(hlist.admin().get());
+    
     0
 }
 

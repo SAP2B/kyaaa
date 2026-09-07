@@ -4,6 +4,9 @@
 #[macro_export]
 macro_rules! book {
     ( $( $name:ident => $Type:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)? ) => {{
+        use core::iter::Iterator;
+        use core::option::Option::Some;
+        use core::option::Option::None;
         #[repr(transparent)]
         struct KyaaaSyncCell<T>(core::cell::UnsafeCell<T>);
         unsafe impl<T> core::marker::Sync for KyaaaSyncCell<T> {}
@@ -18,7 +21,6 @@ macro_rules! book {
         )*
 
         #[repr(transparent)]
-        #[derive(Debug, core::marker::Copy, core::clone::Clone)]
         pub struct Book<const N: usize>(pub [*const (); N]);
 
         #[repr(transparent)]
@@ -33,7 +35,7 @@ macro_rules! book {
         const N: usize = [ $( core::stringify!($name) ),* ].len();
         static TYPES: [core::any::TypeId; N] = [ $( core::any::TypeId::of::<$Type>() ),* ];
 
-        impl<T: core::marker::Copy, const ID: u8> BookRef<T, ID> {
+        impl<T, const ID: u8> BookRef<T, ID> {
             #[inline(always)]
             pub const fn new(ptr: *mut T) -> Self {
                 Self(ptr)

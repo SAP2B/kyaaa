@@ -6,12 +6,10 @@
 ```
 
 ## Examples
-### game.rs
+### book.rs
 ```rust
-{{#include ../../examples/game.rs}}
+{{#include ../../examples/book.rs}}
 ```
-#### cargo run
- ![examples/game.rs](./assets/game.png)
 
 ### gameasm.rs
 
@@ -20,22 +18,13 @@
 ```
 #### assembly proof
 ```bash
-cargo asm --example gameasm --release gameasm::main
+cargo asm --example gameasm --release k_main
 ```
 ```toml
-# Cargo.toml
+{{#include ../../.cargo/config.toml}}
 
-[profile.release]
-opt-level = 3
-panic = "abort"
-lto = true
-codegen-units = 1
-strip = true
+{{#include ../../Cargo.toml}}
 ```
 #### output
 ![examples/gameasm.rs](./assets/gameasm.png)
 
-### tests
-```rs
-{{#include ../../tests/book.rs}}
-```
