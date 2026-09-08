@@ -1,6 +1,6 @@
 # Summary
 
-- [Book](./book.md)
+- [Quick Start](./quickstart.md)
 - [Compile](./compile.md)
 - [Benchmarks](./benches.md)
 - [For Contributors](./docs.md)

@@ -1,14 +1,10 @@
 # Book macro
 
-## Quick Start
+## Examples
+
+### quick.rs
 ```rust
 {{#include ../../examples/quick.rs}}
-```
-
-## Examples
-### book.rs
-```rust
-{{#include ../../examples/book.rs}}
 ```
 
 ### gameasm.rs
