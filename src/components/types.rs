@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-#[repr(C)]
+#[repr(transparent)]
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Str<const N: usize>(pub [u8; N]);
 
@@ -13,22 +13,6 @@ impl<T> KyaaaAssign<T> for T {
     #[inline(always)]
     fn assign_to(self, dest: &mut T) {
         *dest = self;
-    }
-}
-
-impl<const N: usize> KyaaaAssign<Str<N>> for &'static str {
-    #[inline(always)]
-    fn assign_to(self, dest: &mut Str<N>) {
-        let bytes = self.as_bytes();
-        let len = if bytes.len() < N { bytes.len() } else { N };
-        unsafe {
-            let ptr = dest.0.as_mut_ptr();
-            core::ptr::copy_nonoverlapping(bytes.as_ptr(), ptr, len);
-
-            if len < N {
-                core::ptr::write_bytes(ptr.add(len), 0, N - len);
-            }
-        }
     }
 }
 
@@ -44,6 +28,13 @@ impl<const N: usize> KyaaaAssign<Str<N>> for &[u8] {
                 core::ptr::write_bytes(ptr.add(len), 0, N - len);
             }
         }
+    }
+}
+
+impl<const N: usize> KyaaaAssign<Str<N>> for &str {
+    #[inline(always)]
+    fn assign_to(self, dest: &mut Str<N>) {
+        self.as_bytes().assign_to(dest);
     }
 }
 
@@ -96,18 +87,21 @@ impl<const N: usize> Str<N> {
     pub fn push_str(&mut self, s: &str) -> &mut Self {
         let self_len = self.len();
         let bytes = s.as_bytes();
-        let copy_len = if bytes.len() < (N - self_len) {
+        let avail = N.saturating_sub(self_len);
+        let copy_len = if bytes.len() < avail {
             bytes.len()
         } else {
-            N - self_len
+            avail
         };
 
-        unsafe {
-            core::ptr::copy_nonoverlapping(
-                bytes.as_ptr(),
-                self.0.as_mut_ptr().add(self_len),
-                copy_len,
-            );
+        if copy_len > 0 {
+            unsafe {
+                core::ptr::copy_nonoverlapping(
+                    bytes.as_ptr(),
+                    self.0.as_mut_ptr().add(self_len),
+                    copy_len,
+                );
+            }
         }
         self
     }

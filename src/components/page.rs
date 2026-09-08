@@ -10,7 +10,7 @@ macro_rules! page {
     )*) => {
         $(
             #[repr(C, align($align))]
-            #[derive(Debug, PartialEq, Eq)]
+            #[derive(Debug, Clone, Copy, PartialEq, Eq)]
             pub struct $name {
                 $( pub $field_name: $field_type, )*
             }
@@ -29,7 +29,6 @@ macro_rules! page {
             };
 
             impl $name {
-
                 #[inline(always)]
                 pub const fn to_bytes(&self) -> &[u8] {
                     unsafe {
@@ -39,7 +38,6 @@ macro_rules! page {
                         )
                     }
                 }
-
 
                 #[inline(always)]
                 pub const fn from_bytes(input: &[u8]) -> Option<(Self, &[u8])> {

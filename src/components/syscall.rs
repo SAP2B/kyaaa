@@ -4,10 +4,19 @@
 #[repr(transparent)]
 pub struct Syscall(pub u64);
 
+#[inline(always)]
+pub fn check_err(ret: isize) -> Result<usize, i32> {
+    if (ret as usize) > -4096isize as usize {
+        Err(-(ret as i32))
+    } else {
+        Ok(ret as usize)
+    }
+}
+
 macro_rules! syscall {
     ($name:ident, $id:ident) => {
         #[inline(always)]
-        pub fn $name() -> isize {
+        pub fn $name() -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -19,12 +28,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1) -> isize {
+        pub fn $name($a1: $t1) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -37,12 +46,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2) -> isize {
+        pub fn $name($a1: $t1, $a2: $t2) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -56,12 +65,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3) -> isize {
+        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -76,12 +85,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4) -> isize {
+        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -97,12 +106,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty, $a5:ident: $t5:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5) -> isize {
+        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -119,12 +128,12 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty, $a5:ident: $t5:ty, $a6:ident: $t6:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5, $a6: $t6) -> isize {
+        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5, $a6: $t6) -> Result<usize, i32> {
             let ret: isize;
             unsafe {
                 core::arch::asm!(
@@ -142,7 +151,7 @@ macro_rules! syscall {
                     options(nostack)
                 );
             }
-            ret
+            check_err(ret)
         }
     };
 }
@@ -152,6 +161,8 @@ impl Syscall {
     pub const WRITE: Self = Self(1);
     pub const OPEN: Self = Self(2);
     pub const CLOSE: Self = Self(3);
+    pub const STAT: Self = Self(4);
+    pub const FSTAT: Self = Self(5);
     pub const LSEEK: Self = Self(8);
     pub const MMAP: Self = Self(9);
     pub const MPROTECT: Self = Self(10);
@@ -162,6 +173,7 @@ impl Syscall {
     pub const SCHED_YIELD: Self = Self(24);
     pub const MREMAP: Self = Self(25);
     pub const MADVISE: Self = Self(28);
+    pub const NANOSLEEP: Self = Self(35);
     pub const SOCKET: Self = Self(41);
     pub const CONNECT: Self = Self(42);
     pub const SENDTO: Self = Self(44);
@@ -174,8 +186,12 @@ impl Syscall {
     pub const CLONE: Self = Self(56);
     pub const EXECVE: Self = Self(59);
     pub const EXIT: Self = Self(60);
+    pub const WAIT4: Self = Self(61);
+    pub const KILL: Self = Self(62);
     pub const FCNTL: Self = Self(72);
     pub const FDATASYNC: Self = Self(75);
+    pub const GETCWD: Self = Self(79);
+    pub const CHDIR: Self = Self(80);
     pub const SCHED_SETSCHEDULER: Self = Self(144);
     pub const MLOCK: Self = Self(149);
     pub const MLOCKALL: Self = Self(151);
@@ -183,6 +199,7 @@ impl Syscall {
     pub const GETTID: Self = Self(186);
     pub const FUTEX: Self = Self(202);
     pub const SCHED_SETAFFINITY: Self = Self(203);
+    pub const GETDENTS64: Self = Self(217);
     pub const CLOCK_GETTIME: Self = Self(228);
     pub const CLOCK_NANOSLEEP: Self = Self(230);
     pub const EXIT_GROUP: Self = Self(231);
@@ -233,6 +250,8 @@ impl Syscall {
     syscall!(write, WRITE, fd: i32, buf: *const u8, count: usize);
     syscall!(open, OPEN, filename: *const u8, flags: i32, mode: u32);
     syscall!(close, CLOSE, fd: i32);
+    syscall!(stat, STAT, filename: *const u8, statbuf: *mut u8);
+    syscall!(fstat, FSTAT, fd: i32, statbuf: *mut u8);
     syscall!(lseek, LSEEK, fd: i32, offset: i64, whence: i32);
     syscall!(mmap, MMAP, addr: *mut u8, len: usize, prot: i32, flags: i32, fd: i32, off: usize);
     syscall!(mprotect, MPROTECT, addr: *mut u8, len: usize, prot: i32);
@@ -243,6 +262,7 @@ impl Syscall {
     syscall!(sched_yield, SCHED_YIELD);
     syscall!(mremap, MREMAP, old_addr: *mut u8, old_size: usize, new_size: usize, flags: i32, new_addr: *mut u8);
     syscall!(madvise, MADVISE, addr: *mut u8, len: usize, advice: i32);
+    syscall!(nanosleep, NANOSLEEP, req: *const u8, rem: *mut u8);
     syscall!(socket, SOCKET, domain: i32, socket_type: i32, protocol: i32);
     syscall!(connect, CONNECT, sockfd: i32, addr: *const u8, addrlen: u32);
     syscall!(sendto, SENDTO, sockfd: i32, buf: *const u8, len: usize, flags: i32, dest_addr: *const u8, addrlen: u32);
@@ -255,8 +275,12 @@ impl Syscall {
     syscall!(clone, CLONE, flags: usize, stack: *mut u8, parent_tid: *mut i32, child_tid: *mut i32, tls: usize);
     syscall!(execve, EXECVE, filename: *const u8, argv: *const *const u8, envp: *const *const u8);
     syscall!(exit, EXIT, status: i32);
+    syscall!(wait4, WAIT4, pid: i32, wstatus: *mut i32, options: i32, rusage: *mut u8);
+    syscall!(kill, KILL, pid: i32, sig: i32);
     syscall!(fcntl, FCNTL, fd: i32, cmd: i32, arg: usize);
     syscall!(fdatasync, FDATASYNC, fd: i32);
+    syscall!(getcwd, GETCWD, buf: *mut u8, size: usize);
+    syscall!(chdir, CHDIR, filename: *const u8);
     syscall!(sched_setscheduler, SCHED_SETSCHEDULER, pid: i32, policy: i32, param: *const u8);
     syscall!(mlock, MLOCK, addr: *const u8, len: usize);
     syscall!(mlockall, MLOCKALL, flags: i32);
@@ -264,6 +288,7 @@ impl Syscall {
     syscall!(gettid, GETTID);
     syscall!(futex, FUTEX, uaddr: *mut u32, futex_op: i32, val: u32, timeout: *const u8, uaddr2: *mut u32, val3: u32);
     syscall!(sched_setaffinity, SCHED_SETAFFINITY, pid: usize, cpusetsize: usize, mask: *const usize);
+    syscall!(getdents64, GETDENTS64, fd: i32, dirp: *mut u8, count: usize);
     syscall!(clock_gettime, CLOCK_GETTIME, clk_id: i32, tp: *mut u8);
     syscall!(clock_nanosleep, CLOCK_NANOSLEEP, clk_id: i32, flags: i32, rqtp: *const u8, rmtp: *mut u8);
     syscall!(epoll_wait, EPOLL_WAIT, epfd: i32, events: *mut u8, maxevents: i32, timeout: i32);

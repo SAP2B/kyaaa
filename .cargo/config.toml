@@ -9,4 +9,5 @@ rustflags = [
     "-C", "default-linker-libraries=no",
     "-C", "llvm-args=-inline-threshold=1000",
     "-C", "force-frame-pointers=off",
+    "-C", "target-feature=+sse,+sse2,+avx,+avx2"
 ]
