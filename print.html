@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-ede97f57.js";
+            window.path_to_searchindex_js = "searchindex-4915a393.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -189,67 +189,109 @@
 use core::arch::naked_asm;
 use kyaaa::*;
 
+// Define cache-aligned memory layouts (64-byte alignment to prevent false sharing across cores)
+page!(
+    align(64) struct Game {
+        id: Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
+    }
+
+    align(64) struct User {
+        id: Str&lt;32&gt;,
+        name: Str&lt;32&gt;,
+    }
+);
+
 #[panic_handler]
 fn panic(_info: &amp;core::panic::PanicInfo) -&gt; ! {
-    Syscall::exit(1);
+    // Direct kernel exit on panic in a bare-metal environment
+    Syscall::exit(1).expect("Exit error");
     loop {}
 }
 
+// Custom raw entry point bypassing standard runtime initialization
 #[unsafe(naked)]
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -&gt; ! {
     naked_asm!(
         "xor rbp, rbp",
         "mov rdi, rsp",
-        "and rsp, -16",
+        "and rsp, -64", // Align stack to 64 bytes for vector/SIMD safety
         "call {main}",
         "mov rdi, rax",
-        "mov rax, 231",
+        "mov rax, 231", // Syscall number for exit
         "syscall",
         "ud2",
         main = sym k_main,
     );
 }
 
-page!(
- align(32)
-    struct Order {
-        symbol: Str&lt;16&gt;,
-        price: u64,
-        volume: u64,
-    }
-);
+// Global compile-time static book instance mapped directly in the data segment
+book! {
+    pub static HLIST;
+    zelda =&gt; Game {
+        id: Str::from_str("323456789012345678901234"),
+        name: Str::from_str("LOL"),
+    },
+    re9 =&gt; Game {
+        id: Str::from_str("523456789012345678901234"),
+        name: Str::from_str("Requiem"),
+    },
+    player =&gt; User {
+        id: Str::from_str("623456789012345678901234"),
+        name: Str::from_str("Player"),
+    },
+    admin =&gt; User {
+        id: Str::from_str("423456789012345678901234"),
+        name: Str::from_str("admin"),
+    },
+}
 
-extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
+#[unsafe(no_mangle)]
+pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
+    // Local expression-based book instance allocated on the stack
     let hlist = book!(
-        order_sol =&gt; Order {
-            symbol: Str::from_str("SOLANA"),
-            price: 525000,
-            volume: 1000,
+        nier =&gt; Game {
+            id: Str::from_str("023456789012345678901234"),
+            name: Str::from_str("LOL"),
         },
-        order_btc =&gt; Order {
-            symbol: Str::from_str("Bitcoin"),
-            price: 3850,
-            volume: 50000,
+        mario =&gt; Game {
+            id: Str::from_str("023456789012345678901234"),
+            name: Str::from_str("Mario"),
         },
-        order_eth =&gt; Order {
-            symbol: Str::from_str("Etherum"),
-            price: 6120,
-            volume: 200000,
+        sap =&gt; User {
+            id: Str::from_str("223456789012345678901234"),
+            name: Str::from_str("SAP2B"),
+        },
+        admin =&gt; User {
+            id: Str::from_str("423456789012345678901234"),
+            name: Str::from_str("admin"),
         },
     );
 
-    hlist.order_sol().set().volume(15);
+    // Zero-cost field mutation via generated reference wrappers
+    hlist.nier().set().name("NieR Automata");
+    hlist.sap().set().name("SAP2B HFT");
+    HLIST.zelda().set().name("Zelda");
+    HLIST.admin().set().name("Admin HFT");
 
-    black_box(hlist.order_sol().get());
-    black_box(hlist.order_eth().get());
-    black_box(hlist.order_btc().get());
+    // Type-safe dynamic element retrieval using ID lookups
+    if let Some(_nier) = hlist.get::&lt;Game&gt;(hlist.nier().id()) {}
+    if let Some(_zelda) = HLIST.get::&lt;Game&gt;(HLIST.zelda().id()) {}
+
+    // Type mismatch check: results in None safely because hlist.sap().id() belongs to a User, not a Game
+    if let Some(_nier) = hlist.get::&lt;Game&gt;(hlist.sap().id()) {}
+
+    // Zero-overhead filtered iterations over specific concrete types
+    hlist.list::&lt;User&gt;().for_each(|user| {
+        let User { name: _, id: _ } = user;
+    });
+
+    HLIST.list::&lt;User&gt;().for_each(|user| {
+        let User { name: _, id: _ } = user;
+    });
+
     0
-}
-
-#[inline(always)]
-fn black_box&lt;T&gt;(dummy: T) -&gt; T {
-    core::hint::black_box(dummy)
 }
 <span class="boring">}</span></code></pre>
 <h3 id="gameasmrs"><a class="header" href="#gameasmrs">gameasm.rs</a></h3>
@@ -265,12 +307,12 @@ use core::arch::naked_asm;
 use kyaaa::*;
 
 page!(
-    align(32) struct Game {
+    align(64) struct Game {
         id: Str&lt;32&gt;,
         name: Str&lt;32&gt;,
     }
 
-    align(32) struct User {
+    align(64) struct User {
         id: Str&lt;32&gt;,
         name: Str&lt;32&gt;,
     }
@@ -278,7 +320,7 @@ page!(
 
 #[panic_handler]
 fn panic(_info: &amp;core::panic::PanicInfo) -&gt; ! {
-    Syscall::exit(1);
+    Syscall::exit(1).expect("Exit error");
     loop {}
 }
 
@@ -288,7 +330,7 @@ pub extern "C" fn _start() -&gt; ! {
     naked_asm!(
         "xor rbp, rbp",
         "mov rdi, rsp",
-        "and rsp, -16",
+        "and rsp, -64",
         "call {main}",
         "mov rdi, rax",
         "mov rax, 231",
@@ -298,24 +340,41 @@ pub extern "C" fn _start() -&gt; ! {
     );
 }
 
+book! {
+    pub static HLIST;
+    zelda =&gt; Game {
+        id: Str::from_str("323456789012345678901234"),
+        name: Str::from_str("LOL"),
+    },
+    admin =&gt; User {
+        id: Str::from_str("423456789012345678901234"),
+        name: Str::from_str("admin"),
+    },
+}
+
 #[unsafe(no_mangle)]
 pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
     let hlist = book!(
         nier =&gt; Game {
-            id: Str::from_str("123456789012345678901234"),
+            id: Str::from_str("023456789012345678901234"),
             name: Str::from_str("LOL"),
         },
         sap =&gt; User {
-            id: Str::from_str("123456789012345678901234"),
+            id: Str::from_str("223456789012345678901234"),
             name: Str::from_str("SAP2B"),
         },
     );
 
     hlist.nier().set().name("NieR Automata");
     hlist.sap().set().name("SAP2B HFT");
+    HLIST.zelda().set().name("Zelda");
+    HLIST.admin().set().name("Admin HFT");
 
     black_box(hlist.nier().get());
     black_box(hlist.sap().get());
+    black_box(HLIST.admin().get());
+    black_box(HLIST.zelda().get());
+
     0
 }
 
@@ -338,11 +397,12 @@ rustflags = [
     "-C", "default-linker-libraries=no",
     "-C", "llvm-args=-inline-threshold=1000",
     "-C", "force-frame-pointers=off",
+    "-C", "target-feature=+sse,+sse2,+avx,+avx2"
 ]
 
 [package]
 name = "kyaaa"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -372,7 +432,7 @@ strip = true
 <h1 id="compile"><a class="header" href="#compile">Compile</a></h1>
 <pre><code class="language-toml">[package]
 name = "kyaaa"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
