@@ -8,7 +8,7 @@ class MDBookSidebarScrollbox extends HTMLElement {
         super();
     }
     connectedCallback() {
-        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="book.html"><strong aria-hidden="true">1.</strong> Book</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="compile.html"><strong aria-hidden="true">2.</strong> Compile</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="benches.html"><strong aria-hidden="true">3.</strong> Benchmarks</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="docs.html"><strong aria-hidden="true">4.</strong> For Contributors</a></span></li></ol>';
+        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="quickstart.html"><strong aria-hidden="true">1.</strong> Quick Start</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="compile.html"><strong aria-hidden="true">2.</strong> Compile</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="benches.html"><strong aria-hidden="true">3.</strong> Benchmarks</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="docs.html"><strong aria-hidden="true">4.</strong> For Contributors</a></span></li></ol>';
         // Set the current, active page, and reveal it if it's hidden
         let current_page = document.location.href.toString().split('#')[0].split('?')[0];
         if (current_page.endsWith('/')) {

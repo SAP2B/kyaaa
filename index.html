@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Book - Kyaaa!</title>
+        <title>Quick Start - Kyaaa!</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4b4e9b4b.js";
+            window.path_to_searchindex_js = "searchindex-ede97f57.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-e0243e99.js"></script>
+        <script src="toc-8d93f168.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -175,7 +175,8 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="book-macro"><a class="header" href="#book-macro">Book macro</a></h1>
-<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="quickrs"><a class="header" href="#quickrs">quick.rs</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// SPDX-License-Identifier: AGPL-3.0
@@ -242,92 +243,6 @@ extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
     black_box(hlist.order_sol().get());
     black_box(hlist.order_eth().get());
     black_box(hlist.order_btc().get());
-    0
-}
-
-#[inline(always)]
-fn black_box&lt;T&gt;(dummy: T) -&gt; T {
-    core::hint::black_box(dummy)
-}
-<span class="boring">}</span></code></pre>
-<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
-<h3 id="bookrs"><a class="header" href="#bookrs">book.rs</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// SPDX-License-Identifier: AGPL-3.0
-// Copyright (C) 2026 SAP2B
-
-#![no_std]
-#![no_main]
-
-use core::arch::naked_asm;
-use kyaaa::*;
-
-page!(
-    align(64) struct Game {
-        id: Str&lt;64&gt;,
-        name: Str&lt;32&gt;,
-    }
-
-    align(64) struct User {
-        id: Str&lt;64&gt;,
-        name: Str&lt;32&gt;,
-    }
-);
-
-#[panic_handler]
-fn panic(_info: &amp;core::panic::PanicInfo) -&gt; ! {
-    Syscall::exit(1);
-    loop {}
-}
-
-#[unsafe(naked)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -&gt; ! {
-    naked_asm!(
-        "xor rbp, rbp",
-        "mov rdi, rsp",
-        "and rsp, -16",
-        "call {main}",
-        "mov rdi, rax",
-        "mov rax, 231",
-        "syscall",
-        "ud2",
-        main = sym k_main,
-    );
-}
-
-#[unsafe(no_mangle)]
-pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
-    let hlist = book!(
-        nier =&gt; Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("LOL"),
-        },
-        sap =&gt; User {
-            id: Str::from_str("123456789012345678901234"),
-            name: Str::from_str("SAP2B"),
-        },
-        admin =&gt;  User {
-            id: Str::from_str("223456789012345678901234"),
-            name: Str::from_str("Admin"),
-        },
-    );
-
-    hlist.nier().set().name("NieR Automata");
-    hlist.sap().set().name("SAP2B HFT");
-    hlist.admin().set().name("SAP2B Admin");
-
-    let original_admin = hlist.admin().get();
-    let badmin = original_admin.to_bytes();
-    
-    let (parsed_admin, _rest) = User::from_bytes(badmin).expect("failed to parse user bytes");
-    assert_eq!(*original_admin, parsed_admin);
-
-    black_box(hlist.nier().get());
-    black_box(hlist.sap().get());
-    black_box(hlist.admin().get());
-    
     0
 }
 
