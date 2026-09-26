@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-#![no_std]
 #![no_main]
+#![no_std]
 
-use core::arch::naked_asm;
 use kyaaa::*;
 
 page!(
@@ -19,29 +18,7 @@ page!(
     }
 );
 
-#[panic_handler]
-fn panic(_info: &core::panic::PanicInfo) -> ! {
-    Syscall::exit(1).expect("Exit error");
-    loop {}
-}
-
-#[unsafe(naked)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -> ! {
-    naked_asm!(
-        "xor rbp, rbp",
-        "mov rdi, rsp",
-        "and rsp, -64",
-        "call {main}",
-        "mov rdi, rax",
-        "mov rax, 231",
-        "syscall",
-        "ud2",
-        main = sym k_main,
-    );
-}
-
-book! {
+book!(
     pub static HLIST;
     zelda => Game {
         id: Str::from_str("323456789012345678901234"),
@@ -51,33 +28,36 @@ book! {
         id: Str::from_str("423456789012345678901234"),
         name: Str::from_str("admin"),
     },
-}
+);
 
-#[unsafe(no_mangle)]
-pub extern "C" fn k_main(_sp: *const usize) -> i32 {
-    let hlist = book!(
-        nier => Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("LOL"),
-        },
-        sap => User {
-            id: Str::from_str("223456789012345678901234"),
-            name: Str::from_str("SAP2B"),
-        },
-    );
+kmain!(
+    align(64);
 
-    hlist.nier().set().name("NieR Automata");
-    hlist.sap().set().name("SAP2B HFT");
-    HLIST.zelda().set().name("Zelda");
-    HLIST.admin().set().name("Admin HFT");
+    fn kmain(_sp: *const usize) -> i32 {
+        let hlist = book!(
+            nier => Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("LOL"),
+            },
+            sap => User {
+                id: Str::from_str("223456789012345678901234"),
+                name: Str::from_str("SAP2B"),
+            },
+        );
 
-    black_box(hlist.nier().get());
-    black_box(hlist.sap().get());
-    black_box(HLIST.admin().get());
-    black_box(HLIST.zelda().get());
+        hlist.nier().set().name("NieR Automata");
+        hlist.sap().set().name("SAP2B HFT");
+        HLIST.zelda().set().name("Zelda");
+        HLIST.admin().set().name("Admin HFT");
 
-    0
-}
+        black_box(hlist.nier().get());
+        black_box(hlist.sap().get());
+        black_box(HLIST.admin().get());
+        black_box(HLIST.zelda().get());
+
+        0
+    }
+);
 
 #[inline(always)]
 fn black_box<T>(dummy: T) -> T {

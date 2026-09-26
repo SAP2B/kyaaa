@@ -13,149 +13,272 @@ pub fn check_err(ret: isize) -> Result<usize, i32> {
     }
 }
 
+macro_rules! raw_syscall {
+    ($id:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr, $a2:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                in("rsi") $a2 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                in("x1") $a2 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr, $a2:expr, $a3:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                in("rsi") $a2 as u64,
+                in("rdx") $a3 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                in("x1") $a2 as u64,
+                in("x2") $a3 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                in("rsi") $a2 as u64,
+                in("rdx") $a3 as u64,
+                in("r10") $a4 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                in("x1") $a2 as u64,
+                in("x2") $a3 as u64,
+                in("x3") $a4 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                in("rsi") $a2 as u64,
+                in("rdx") $a3 as u64,
+                in("r10") $a4 as u64,
+                in("r8") $a5 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                in("x1") $a2 as u64,
+                in("x2") $a3 as u64,
+                in("x3") $a4 as u64,
+                in("x4") $a5 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+    ($id:expr, $a1:expr, $a2:expr, $a3:expr, $a4:expr, $a5:expr, $a6:expr) => {{
+        let ret: isize;
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            core::arch::asm!(
+                "syscall",
+                in("rax") $id,
+                in("rdi") $a1 as u64,
+                in("rsi") $a2 as u64,
+                in("rdx") $a3 as u64,
+                in("r10") $a4 as u64,
+                in("r8") $a5 as u64,
+                in("r9") $a6 as u64,
+                lateout("rax") ret,
+                out("rcx") _,
+                out("r11") _,
+                options(nostack)
+            );
+        }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") $id,
+                in("x0") $a1 as u64,
+                in("x1") $a2 as u64,
+                in("x2") $a3 as u64,
+                in("x3") $a4 as u64,
+                in("x4") $a5 as u64,
+                in("x5") $a6 as u64,
+                lateout("x0") ret,
+                options(nostack)
+            );
+        }
+        ret
+    }};
+}
+
 macro_rules! syscall {
     ($name:ident, $id:ident) => {
         #[inline(always)]
         pub fn $name() -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty) => {
         #[inline(always)]
         pub fn $name($a1: $t1) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0, $a1))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty) => {
         #[inline(always)]
         pub fn $name($a1: $t1, $a2: $t2) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    in("rsi") $a2 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0, $a1, $a2))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty) => {
         #[inline(always)]
         pub fn $name($a1: $t1, $a2: $t2, $a3: $t3) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    in("rsi") $a2 as u64,
-                    in("rdx") $a3 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0, $a1, $a2, $a3))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty) => {
         #[inline(always)]
         pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    in("rsi") $a2 as u64,
-                    in("rdx") $a3 as u64,
-                    in("r10") $a4 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0, $a1, $a2, $a3, $a4))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty, $a5:ident: $t5:ty) => {
         #[inline(always)]
         pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    in("rsi") $a2 as u64,
-                    in("rdx") $a3 as u64,
-                    in("r10") $a4 as u64,
-                    in("r8") $a5 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+            check_err(raw_syscall!(Self::$id.0, $a1, $a2, $a3, $a4, $a5))
         }
     };
     ($name:ident, $id:ident, $a1:ident: $t1:ty, $a2:ident: $t2:ty, $a3:ident: $t3:ty, $a4:ident: $t4:ty, $a5:ident: $t5:ty, $a6:ident: $t6:ty) => {
         #[inline(always)]
-        pub fn $name($a1: $t1, $a2: $t2, $a3: $t3, $a4: $t4, $a5: $t5, $a6: $t6) -> Result<usize, i32> {
-            let ret: isize;
-            unsafe {
-                core::arch::asm!(
-                    "syscall",
-                    in("rax") Self::$id.0,
-                    in("rdi") $a1 as u64,
-                    in("rsi") $a2 as u64,
-                    in("rdx") $a3 as u64,
-                    in("r10") $a4 as u64,
-                    in("r8") $a5 as u64,
-                    in("r9") $a6 as u64,
-                    lateout("rax") ret,
-                    out("rcx") _,
-                    out("r11") _,
-                    options(nostack)
-                );
-            }
-            check_err(ret)
+        pub fn $name(
+            $a1: $t1,
+            $a2: $t2,
+            $a3: $t3,
+            $a4: $t4,
+            $a5: $t5,
+            $a6: $t6,
+        ) -> Result<usize, i32> {
+            check_err(raw_syscall!(Self::$id.0, $a1, $a2, $a3, $a4, $a5, $a6))
         }
     };
 }
 
+#[cfg(target_arch = "x86_64")]
 impl Syscall {
     pub const READ: Self = Self(0);
     pub const WRITE: Self = Self(1);
@@ -233,9 +356,89 @@ impl Syscall {
     pub const PIDFD_OPEN: Self = Self(434);
     pub const CLONE3: Self = Self(435);
     pub const FUTEX_WAITV: Self = Self(448);
+}
 
+#[cfg(target_arch = "aarch64")]
+impl Syscall {
+    pub const IOCTL: Self = Self(29);
+    pub const GETCWD: Self = Self(17);
+    pub const CHDIR: Self = Self(49);
+    pub const OPENAT: Self = Self(56);
+    pub const CLOSE: Self = Self(57);
+    pub const PIPE2: Self = Self(59);
+    pub const LSEEK: Self = Self(62);
+    pub const READ: Self = Self(63);
+    pub const WRITE: Self = Self(64);
+    pub const READV: Self = Self(65);
+    pub const WRITEV: Self = Self(66);
+    pub const PREADV: Self = Self(67);
+    pub const PWRITEV: Self = Self(68);
+    pub const PREAD64: Self = Self(67);
+    pub const FDATASYNC: Self = Self(83);
+    pub const EXIT: Self = Self(93);
+    pub const EXIT_GROUP: Self = Self(94);
+    pub const FUTEX: Self = Self(98);
+    pub const NANOSLEEP: Self = Self(101);
+    pub const CLOCK_GETTIME: Self = Self(113);
+    pub const CLOCK_NANOSLEEP: Self = Self(115);
+    pub const SCHED_YIELD: Self = Self(124);
+    pub const KILL: Self = Self(129);
+    pub const SCHED_SETSCHEDULER: Self = Self(119);
+    pub const SCHED_SETAFFINITY: Self = Self(122);
+    pub const PRCTL: Self = Self(167);
+    pub const GETTID: Self = Self(178);
+    pub const SOCKET: Self = Self(198);
+    pub const BIND: Self = Self(200);
+    pub const LISTEN: Self = Self(201);
+    pub const ACCEPT4: Self = Self(242);
+    pub const CONNECT: Self = Self(203);
+    pub const GETSOCKOPT: Self = Self(209);
+    pub const SETSOCKOPT: Self = Self(208);
+    pub const SHUTDOWN: Self = Self(210);
+    pub const SENDTO: Self = Self(206);
+    pub const RECVFROM: Self = Self(207);
+    pub const MUNMAP: Self = Self(215);
+    pub const MREMAP: Self = Self(216);
+    pub const MMAP: Self = Self(222);
+    pub const MPROTECT: Self = Self(226);
+    pub const MADVISE: Self = Self(233);
+    pub const GETDENTS64: Self = Self(61);
+    pub const FCNTL: Self = Self(25);
+    pub const MLOCK: Self = Self(228);
+    pub const MLOCKALL: Self = Self(230);
+    pub const EPOLL_CREATE1: Self = Self(20);
+    pub const EPOLL_CTL: Self = Self(21);
+    pub const EPOLL_WAIT: Self = Self(22);
+    pub const EVENTFD2: Self = Self(19);
+    pub const TIMERFD_CREATE: Self = Self(85);
+    pub const TIMERFD_SETTIME: Self = Self(86);
+    pub const UNLINKAT: Self = Self(35);
+    pub const SPLICE: Self = Self(76);
+    pub const TEE: Self = Self(77);
+    pub const FALLOCATE: Self = Self(47);
+    pub const RECVMMSG: Self = Self(243);
+    pub const SENDMMSG: Self = Self(269);
+    pub const GETCPU: Self = Self(168);
+    pub const SECCOMP: Self = Self(277);
+    pub const GETRANDOM: Self = Self(278);
+    pub const MEMFD_CREATE: Self = Self(279);
+    pub const BPF: Self = Self(280);
+    pub const USERFAULTFD: Self = Self(282);
+    pub const COPY_FILE_RANGE: Self = Self(285);
+    pub const PWRITEV2: Self = Self(287);
+    pub const STATX: Self = Self(291);
+    pub const IO_URING_SETUP: Self = Self(425);
+    pub const IO_URING_ENTER: Self = Self(426);
+    pub const IO_URING_REGISTER: Self = Self(427);
+    pub const PIDFD_OPEN: Self = Self(434);
+    pub const CLONE3: Self = Self(435);
+    pub const FUTEX_WAITV: Self = Self(448);
+}
+
+impl Syscall {
     #[inline(always)]
     pub fn exit_group(status: i32) -> ! {
+        #[cfg(target_arch = "x86_64")]
         unsafe {
             core::arch::asm!(
                 "syscall",
@@ -244,14 +447,20 @@ impl Syscall {
                 options(noreturn, nostack)
             );
         }
+        #[cfg(target_arch = "aarch64")]
+        unsafe {
+            core::arch::asm!(
+                "svc #0",
+                in("x8") Self::EXIT_GROUP.0,
+                in("x0") status as u64,
+                options(noreturn, nostack)
+            );
+        }
     }
 
     syscall!(read, READ, fd: i32, buf: *mut u8, count: usize);
     syscall!(write, WRITE, fd: i32, buf: *const u8, count: usize);
-    syscall!(open, OPEN, filename: *const u8, flags: i32, mode: u32);
     syscall!(close, CLOSE, fd: i32);
-    syscall!(stat, STAT, filename: *const u8, statbuf: *mut u8);
-    syscall!(fstat, FSTAT, fd: i32, statbuf: *mut u8);
     syscall!(lseek, LSEEK, fd: i32, offset: i64, whence: i32);
     syscall!(mmap, MMAP, addr: *mut u8, len: usize, prot: i32, flags: i32, fd: i32, off: usize);
     syscall!(mprotect, MPROTECT, addr: *mut u8, len: usize, prot: i32);
@@ -272,10 +481,7 @@ impl Syscall {
     syscall!(listen, LISTEN, sockfd: i32, backlog: i32);
     syscall!(setsockopt, SETSOCKOPT, sockfd: i32, level: i32, optname: i32, optval: *const u8, optlen: u32);
     syscall!(getsockopt, GETSOCKOPT, sockfd: i32, level: i32, optname: i32, optval: *mut u8, optlen: *mut u32);
-    syscall!(clone, CLONE, flags: usize, stack: *mut u8, parent_tid: *mut i32, child_tid: *mut i32, tls: usize);
-    syscall!(execve, EXECVE, filename: *const u8, argv: *const *const u8, envp: *const *const u8);
     syscall!(exit, EXIT, status: i32);
-    syscall!(wait4, WAIT4, pid: i32, wstatus: *mut i32, options: i32, rusage: *mut u8);
     syscall!(kill, KILL, pid: i32, sig: i32);
     syscall!(fcntl, FCNTL, fd: i32, cmd: i32, arg: usize);
     syscall!(fdatasync, FDATASYNC, fd: i32);

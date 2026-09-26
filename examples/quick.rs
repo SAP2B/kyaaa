@@ -4,7 +4,6 @@
 #![no_std]
 #![no_main]
 
-use core::arch::naked_asm;
 use kyaaa::*;
 
 // Define cache-aligned memory layouts (64-byte alignment to prevent false sharing across cores)
@@ -20,32 +19,8 @@ page!(
     }
 );
 
-#[panic_handler]
-fn panic(_info: &core::panic::PanicInfo) -> ! {
-    // Direct kernel exit on panic in a bare-metal environment
-    Syscall::exit(1).expect("Exit error");
-    loop {}
-}
-
-// Custom raw entry point bypassing standard runtime initialization
-#[unsafe(naked)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -> ! {
-    naked_asm!(
-        "xor rbp, rbp",
-        "mov rdi, rsp",
-        "and rsp, -64", // Align stack to 64 bytes for vector/SIMD safety
-        "call {main}",
-        "mov rdi, rax",
-        "mov rax, 231", // Syscall number for exit
-        "syscall",
-        "ud2",
-        main = sym k_main,
-    );
-}
-
 // Global compile-time static book instance mapped directly in the data segment
-book! {
+book!(
     pub static HLIST;
     zelda => Game {
         id: Str::from_str("323456789012345678901234"),
@@ -63,51 +38,66 @@ book! {
         id: Str::from_str("423456789012345678901234"),
         name: Str::from_str("admin"),
     },
-}
+);
 
-#[unsafe(no_mangle)]
-pub extern "C" fn k_main(_sp: *const usize) -> i32 {
-    // Local expression-based book instance allocated on the stack
-    let hlist = book!(
-        nier => Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("LOL"),
-        },
-        mario => Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("Mario"),
-        },
-        sap => User {
-            id: Str::from_str("223456789012345678901234"),
-            name: Str::from_str("SAP2B"),
-        },
-        admin => User {
-            id: Str::from_str("423456789012345678901234"),
-            name: Str::from_str("admin"),
-        },
-    );
+// Entry-point generation macro with 64-byte stack alignment
+kmain!(
+    align(64);
 
-    // Zero-cost field mutation via generated reference wrappers
-    hlist.nier().set().name("NieR Automata");
-    hlist.sap().set().name("SAP2B HFT");
-    HLIST.zelda().set().name("Zelda");
-    HLIST.admin().set().name("Admin HFT");
+    fn kmain(_sp: *const usize) -> i32 {
+        // Local expression-based book instance allocated on the stack
+        let hlist = book!(
+            nier => Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("LOL"),
+            },
+            mario => Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("Mario"),
+            },
+            sap => User {
+                id: Str::from_str("223456789012345678901234"),
+                name: Str::from_str("SAP2B"),
+            },
+            admin => User {
+                id: Str::from_str("423456789012345678901234"),
+                name: Str::from_str("admin"),
+            },
+        );
 
-    // Type-safe dynamic element retrieval using ID lookups
-    if let Some(_nier) = hlist.get::<Game>(hlist.nier().id()) {}
-    if let Some(_zelda) = HLIST.get::<Game>(HLIST.zelda().id()) {}
+        // Zero-cost field mutation via generated reference wrappers
+        hlist.nier().set().name("NieR Automata");
+        hlist.sap().set().name("SAP2B HFT");
+        HLIST.zelda().set().name("Zelda");
+        HLIST.admin().set().name("Admin HFT");
 
-    // Type mismatch check: results in None safely because hlist.sap().id() belongs to a User, not a Game
-    if let Some(_nier) = hlist.get::<Game>(hlist.sap().id()) {}
+        // Type-safe dynamic element retrieval using ID lookups
+        if let Some(nier) = hlist.get::<Game>(hlist.nier().id()) {
+            black_box(nier);
+        }
+        if let Some(zelda) = HLIST.get::<Game>(HLIST.zelda().id()) {
+            black_box(zelda);
+        }
 
-    // Zero-overhead filtered iterations over specific concrete types
-    hlist.list::<User>().for_each(|user| {
-        let User { name: _, id: _ } = user;
-    });
+        // Type mismatch check: returns None safely because `hlist.sap().id()` belongs to a User, not a Game
+        let mismatch = hlist.get::<Game>(hlist.sap().id());
+        black_box(mismatch);
 
-    HLIST.list::<User>().for_each(|user| {
-        let User { name: _, id: _ } = user;
-    });
+        // Zero-overhead filtered iterations over specific concrete types
+        hlist.list::<User>().for_each(|user| {
+            black_box(user);
+        });
 
-    0
+        HLIST.list::<User>().for_each(|user| {
+            black_box(user);
+        });
+
+        0
+    }
+);
+
+// Inline helper to prevent dead-code elimination by compiler optimizations
+#[inline(always)]
+fn black_box<T>(dummy: T) -> T {
+    core::hint::black_box(dummy)
 }
