@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4915a393.js";
+            window.path_to_searchindex_js = "searchindex-5eac2972.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -186,7 +186,6 @@
 #![no_std]
 #![no_main]
 
-use core::arch::naked_asm;
 use kyaaa::*;
 
 // Define cache-aligned memory layouts (64-byte alignment to prevent false sharing across cores)
@@ -202,32 +201,8 @@ page!(
     }
 );
 
-#[panic_handler]
-fn panic(_info: &amp;core::panic::PanicInfo) -&gt; ! {
-    // Direct kernel exit on panic in a bare-metal environment
-    Syscall::exit(1).expect("Exit error");
-    loop {}
-}
-
-// Custom raw entry point bypassing standard runtime initialization
-#[unsafe(naked)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -&gt; ! {
-    naked_asm!(
-        "xor rbp, rbp",
-        "mov rdi, rsp",
-        "and rsp, -64", // Align stack to 64 bytes for vector/SIMD safety
-        "call {main}",
-        "mov rdi, rax",
-        "mov rax, 231", // Syscall number for exit
-        "syscall",
-        "ud2",
-        main = sym k_main,
-    );
-}
-
 // Global compile-time static book instance mapped directly in the data segment
-book! {
+book!(
     pub static HLIST;
     zelda =&gt; Game {
         id: Str::from_str("323456789012345678901234"),
@@ -245,53 +220,68 @@ book! {
         id: Str::from_str("423456789012345678901234"),
         name: Str::from_str("admin"),
     },
-}
+);
 
-#[unsafe(no_mangle)]
-pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
-    // Local expression-based book instance allocated on the stack
-    let hlist = book!(
-        nier =&gt; Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("LOL"),
-        },
-        mario =&gt; Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("Mario"),
-        },
-        sap =&gt; User {
-            id: Str::from_str("223456789012345678901234"),
-            name: Str::from_str("SAP2B"),
-        },
-        admin =&gt; User {
-            id: Str::from_str("423456789012345678901234"),
-            name: Str::from_str("admin"),
-        },
-    );
+// Entry-point generation macro with 64-byte stack alignment
+kmain!(
+    align(64);
 
-    // Zero-cost field mutation via generated reference wrappers
-    hlist.nier().set().name("NieR Automata");
-    hlist.sap().set().name("SAP2B HFT");
-    HLIST.zelda().set().name("Zelda");
-    HLIST.admin().set().name("Admin HFT");
+    fn kmain(_sp: *const usize) -&gt; i32 {
+        // Local expression-based book instance allocated on the stack
+        let hlist = book!(
+            nier =&gt; Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("LOL"),
+            },
+            mario =&gt; Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("Mario"),
+            },
+            sap =&gt; User {
+                id: Str::from_str("223456789012345678901234"),
+                name: Str::from_str("SAP2B"),
+            },
+            admin =&gt; User {
+                id: Str::from_str("423456789012345678901234"),
+                name: Str::from_str("admin"),
+            },
+        );
 
-    // Type-safe dynamic element retrieval using ID lookups
-    if let Some(_nier) = hlist.get::&lt;Game&gt;(hlist.nier().id()) {}
-    if let Some(_zelda) = HLIST.get::&lt;Game&gt;(HLIST.zelda().id()) {}
+        // Zero-cost field mutation via generated reference wrappers
+        hlist.nier().set().name("NieR Automata");
+        hlist.sap().set().name("SAP2B HFT");
+        HLIST.zelda().set().name("Zelda");
+        HLIST.admin().set().name("Admin HFT");
 
-    // Type mismatch check: results in None safely because hlist.sap().id() belongs to a User, not a Game
-    if let Some(_nier) = hlist.get::&lt;Game&gt;(hlist.sap().id()) {}
+        // Type-safe dynamic element retrieval using ID lookups
+        if let Some(nier) = hlist.get::&lt;Game&gt;(hlist.nier().id()) {
+            black_box(nier);
+        }
+        if let Some(zelda) = HLIST.get::&lt;Game&gt;(HLIST.zelda().id()) {
+            black_box(zelda);
+        }
 
-    // Zero-overhead filtered iterations over specific concrete types
-    hlist.list::&lt;User&gt;().for_each(|user| {
-        let User { name: _, id: _ } = user;
-    });
+        // Type mismatch check: returns None safely because `hlist.sap().id()` belongs to a User, not a Game
+        let mismatch = hlist.get::&lt;Game&gt;(hlist.sap().id());
+        black_box(mismatch);
 
-    HLIST.list::&lt;User&gt;().for_each(|user| {
-        let User { name: _, id: _ } = user;
-    });
+        // Zero-overhead filtered iterations over specific concrete types
+        hlist.list::&lt;User&gt;().for_each(|user| {
+            black_box(user);
+        });
 
-    0
+        HLIST.list::&lt;User&gt;().for_each(|user| {
+            black_box(user);
+        });
+
+        0
+    }
+);
+
+// Inline helper to prevent dead-code elimination by compiler optimizations
+#[inline(always)]
+fn black_box&lt;T&gt;(dummy: T) -&gt; T {
+    core::hint::black_box(dummy)
 }
 <span class="boring">}</span></code></pre>
 <h3 id="gameasmrs"><a class="header" href="#gameasmrs">gameasm.rs</a></h3>
@@ -300,10 +290,9 @@ pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
 </span>// SPDX-License-Identifier: AGPL-3.0
 // Copyright (C) 2026 SAP2B
 
-#![no_std]
 #![no_main]
+#![no_std]
 
-use core::arch::naked_asm;
 use kyaaa::*;
 
 page!(
@@ -318,29 +307,7 @@ page!(
     }
 );
 
-#[panic_handler]
-fn panic(_info: &amp;core::panic::PanicInfo) -&gt; ! {
-    Syscall::exit(1).expect("Exit error");
-    loop {}
-}
-
-#[unsafe(naked)]
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -&gt; ! {
-    naked_asm!(
-        "xor rbp, rbp",
-        "mov rdi, rsp",
-        "and rsp, -64",
-        "call {main}",
-        "mov rdi, rax",
-        "mov rax, 231",
-        "syscall",
-        "ud2",
-        main = sym k_main,
-    );
-}
-
-book! {
+book!(
     pub static HLIST;
     zelda =&gt; Game {
         id: Str::from_str("323456789012345678901234"),
@@ -350,33 +317,36 @@ book! {
         id: Str::from_str("423456789012345678901234"),
         name: Str::from_str("admin"),
     },
-}
+);
 
-#[unsafe(no_mangle)]
-pub extern "C" fn k_main(_sp: *const usize) -&gt; i32 {
-    let hlist = book!(
-        nier =&gt; Game {
-            id: Str::from_str("023456789012345678901234"),
-            name: Str::from_str("LOL"),
-        },
-        sap =&gt; User {
-            id: Str::from_str("223456789012345678901234"),
-            name: Str::from_str("SAP2B"),
-        },
-    );
+kmain!(
+    align(64);
 
-    hlist.nier().set().name("NieR Automata");
-    hlist.sap().set().name("SAP2B HFT");
-    HLIST.zelda().set().name("Zelda");
-    HLIST.admin().set().name("Admin HFT");
+    fn kmain(_sp: *const usize) -&gt; i32 {
+        let hlist = book!(
+            nier =&gt; Game {
+                id: Str::from_str("023456789012345678901234"),
+                name: Str::from_str("LOL"),
+            },
+            sap =&gt; User {
+                id: Str::from_str("223456789012345678901234"),
+                name: Str::from_str("SAP2B"),
+            },
+        );
 
-    black_box(hlist.nier().get());
-    black_box(hlist.sap().get());
-    black_box(HLIST.admin().get());
-    black_box(HLIST.zelda().get());
+        hlist.nier().set().name("NieR Automata");
+        hlist.sap().set().name("SAP2B HFT");
+        HLIST.zelda().set().name("Zelda");
+        HLIST.admin().set().name("Admin HFT");
 
-    0
-}
+        black_box(hlist.nier().get());
+        black_box(hlist.sap().get());
+        black_box(HLIST.admin().get());
+        black_box(HLIST.zelda().get());
+
+        0
+    }
+);
 
 #[inline(always)]
 fn black_box&lt;T&gt;(dummy: T) -&gt; T {
@@ -402,7 +372,7 @@ rustflags = [
 
 [package]
 name = "kyaaa"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -419,11 +389,13 @@ readme = "README.md"
 panic = "abort"
 
 [profile.release]
-opt-level = 3
-panic = "abort"
-lto = true
-codegen-units = 1
-strip = true
+opt-level = 3        
+lto = "fat"          
+codegen-units = 1    
+panic = "abort"      
+strip = true         
+debug = false
+
 
 </code></pre>
 <h4 id="output"><a class="header" href="#output">output</a></h4>
@@ -432,7 +404,7 @@ strip = true
 <h1 id="compile"><a class="header" href="#compile">Compile</a></h1>
 <pre><code class="language-toml">[package]
 name = "kyaaa"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -449,11 +421,13 @@ readme = "README.md"
 panic = "abort"
 
 [profile.release]
-opt-level = 3
-panic = "abort"
-lto = true
-codegen-units = 1
-strip = true
+opt-level = 3        
+lto = "fat"          
+codegen-units = 1    
+panic = "abort"      
+strip = true         
+debug = false
+
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
