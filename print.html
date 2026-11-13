@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-549014e3.js";
+            window.path_to_searchindex_js = "searchindex-43104cb7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -272,7 +272,7 @@ rustflags = [
 
 [package]
 name = "kyaaa"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -285,11 +285,9 @@ include = [
     "Cargo.toml",
     "README.md",
     "LICENSE*",
-    "!benches/**",
-    "!math_proof/**",
 ]
 
-[dev-dependencies]
+[target.'cfg(not(target_os = "none"))'.dev-dependencies]
 criterion = "0.8.2"
 
 [dependencies]
@@ -322,7 +320,7 @@ resolver = "2"
 <h1 id="compile"><a class="header" href="#compile">Compile</a></h1>
 <pre><code class="language-toml">[package]
 name = "kyaaa"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
@@ -335,11 +333,9 @@ include = [
     "Cargo.toml",
     "README.md",
     "LICENSE*",
-    "!benches/**",
-    "!math_proof/**",
 ]
 
-[dev-dependencies]
+[target.'cfg(not(target_os = "none"))'.dev-dependencies]
 criterion = "0.8.2"
 
 [dependencies]
