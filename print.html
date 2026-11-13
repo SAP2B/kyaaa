@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7018dce2.js";
+            window.path_to_searchindex_js = "searchindex-549014e3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -280,6 +280,14 @@ categories = ["data-structures", "no-std", "embedded", "memory-management"]
 license = "MIT"
 repository = "https://github.com/SAP2B/kyaaa"
 readme = "README.md"
+include = [
+    "src/**",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE*",
+    "!benches/**",
+    "!math_proof/**",
+]
 
 [dev-dependencies]
 criterion = "0.8.2"
@@ -322,6 +330,14 @@ categories = ["data-structures", "no-std", "embedded", "memory-management"]
 license = "MIT"
 repository = "https://github.com/SAP2B/kyaaa"
 readme = "README.md"
+include = [
+    "src/**",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE*",
+    "!benches/**",
+    "!math_proof/**",
+]
 
 [dev-dependencies]
 criterion = "0.8.2"
