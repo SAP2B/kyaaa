@@ -7,7 +7,7 @@ pub struct Str<const N: usize>(pub [u8; N]);
 impl<const N: usize> Assign<Str<N>> for &[u8] {
     #[inline(always)]
     fn assign_to(self, dest: &mut Str<N>) {
-        let len = if self.len() < N { self.len() } else { N };
+        let len = self.len().min(N);
         unsafe {
             let ptr = dest.0.as_mut_ptr();
 
@@ -16,7 +16,7 @@ impl<const N: usize> Assign<Str<N>> for &[u8] {
             }
 
             if len < N {
-                ptr.add(len).write(0);
+                core::ptr::write_bytes(ptr.add(len), 0, N - len);
             }
         }
     }
