@@ -1,44 +1,35 @@
-// SPDX-License-Identifier: AGPL-3.0
-// Copyright (C) 2026 SAP2B
+use super::contracts::*;
 
 #[repr(transparent)]
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Str<const N: usize>(pub [u8; N]);
 
-pub trait KyaaaAssign<T> {
-    fn assign_to(self, dest: &mut T);
-}
-
-impl<T> KyaaaAssign<T> for T {
-    #[inline(always)]
-    fn assign_to(self, dest: &mut T) {
-        *dest = self;
-    }
-}
-
-impl<const N: usize> KyaaaAssign<Str<N>> for &[u8] {
+impl<const N: usize> Assign<Str<N>> for &[u8] {
     #[inline(always)]
     fn assign_to(self, dest: &mut Str<N>) {
         let len = if self.len() < N { self.len() } else { N };
         unsafe {
             let ptr = dest.0.as_mut_ptr();
-            core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, len);
+
+            if len > 0 {
+                core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, len);
+            }
 
             if len < N {
-                core::ptr::write_bytes(ptr.add(len), 0, N - len);
+                ptr.add(len).write(0);
             }
         }
     }
 }
 
-impl<const N: usize> KyaaaAssign<Str<N>> for &str {
+impl<const N: usize> Assign<Str<N>> for &str {
     #[inline(always)]
     fn assign_to(self, dest: &mut Str<N>) {
         self.as_bytes().assign_to(dest);
     }
 }
 
-impl<const N: usize, const M: usize> KyaaaAssign<Str<N>> for &[u8; M] {
+impl<const N: usize, const M: usize> Assign<Str<N>> for &[u8; M] {
     #[inline(always)]
     fn assign_to(self, dest: &mut Str<N>) {
         self.as_slice().assign_to(dest);
@@ -46,8 +37,16 @@ impl<const N: usize, const M: usize> KyaaaAssign<Str<N>> for &[u8; M] {
 }
 
 impl<const N: usize> core::fmt::Debug for Str<N> {
+    #[inline(always)]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         core::fmt::Debug::fmt(self.as_str(), f)
+    }
+}
+
+impl<const N: usize> core::fmt::Display for Str<N> {
+    #[inline(always)]
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 

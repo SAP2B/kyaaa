@@ -1,7 +1,14 @@
-// SPDX-License-Identifier: AGPL-3.0
-// Copyright (C) 2026 SAP2B
-
 #![no_std]
+#![no_main]
 
-pub mod components;
-pub use components::prelude::*;
+pub mod macros;
+pub mod math;
+pub mod std;
+pub mod types;
+
+pub mod prelude {
+    //pub use crate::math::prelude::*;
+    pub use crate::std::prelude::*;
+    pub use crate::types::prelude::*;
+    pub use crate::*;
+}

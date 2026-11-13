@@ -1,17 +1,18 @@
 [package]
 name = "kyaaa"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
 categories = ["data-structures", "no-std", "embedded", "memory-management"]
-license = "AGPL-3.0-only"
+license = "MIT"
 repository = "https://github.com/SAP2B/kyaaa"
 readme = "README.md"
 
-[dependencies]
-
 [dev-dependencies]
+criterion = "0.8.2"
+
+[dependencies]
 
 [profile.dev]
 panic = "abort"
@@ -24,4 +25,13 @@ panic = "abort"
 strip = true         
 debug = false
 
+[workspace]
+members = [
+    ".",
+    "math_proof"
+]
+resolver = "2"
 
+#[[bench]]
+#name = "ring_bench"
+#harness = false

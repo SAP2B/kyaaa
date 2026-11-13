@@ -1,22 +1,19 @@
-// SPDX-License-Identifier: AGPL-3.0
-// Copyright (C) 2026 SAP2B
-
 #[macro_export]
 macro_rules! book {
-    ( @core $( $name:ident => $Type:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* ) => {
+    ( @core $IdType:ty, $( $name:ident : $Type:ident = $InitType:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* ) => {
         use core::iter::Iterator;
         use core::option::Option::{Some, None};
         use core::any::TypeId;
 
         #[repr(transparent)]
-        pub struct KyaaaSyncCell<T>(pub core::cell::UnsafeCell<T>);
-        unsafe impl<T> core::marker::Sync for KyaaaSyncCell<T> {}
-        unsafe impl<T> core::marker::Send for KyaaaSyncCell<T> {}
+        pub struct SyncCell<T>(pub core::cell::UnsafeCell<T>);
+        unsafe impl<T> core::marker::Sync for SyncCell<T> {}
+        unsafe impl<T> core::marker::Send for SyncCell<T> {}
 
         $(
             #[allow(non_upper_case_globals)]
-            static $name: KyaaaSyncCell<$Type> = KyaaaSyncCell(core::cell::UnsafeCell::new(
-                $Type {
+            static $name: SyncCell<$Type> = SyncCell(core::cell::UnsafeCell::new(
+                $InitType {
                     $( $f_name : $f_val ),*
                 }
             ));
@@ -29,21 +26,21 @@ macro_rules! book {
         unsafe impl<const N_ENTRIES: usize> core::marker::Send for Book<N_ENTRIES> {}
 
         #[repr(transparent)]
-        pub struct BookRef<T, const ID: u8>(pub *mut T);
+        pub struct BookRef<T, const ID: $IdType>(pub *mut T);
 
         #[allow(non_camel_case_types)]
-        #[repr(u8)]
+        #[repr($IdType)]
         pub enum BookIds {
             $( $name ),*
         }
 
         pub const N: usize = [ $( core::stringify!($name) ),* ].len();
 
-        impl<T, const ID: u8> BookRef<T, ID> {
+        impl<T, const ID: $IdType> BookRef<T, ID> {
             #[inline(always)]
             pub const fn new(ptr: *mut T) -> Self { Self(ptr) }
             #[inline(always)]
-            pub const fn id(&self) -> u8 { ID }
+            pub const fn id(&self) -> $IdType { ID }
             #[inline(always)]
             pub const fn get(&self) -> &'static T { unsafe { &*self.0 } }
             #[inline(always)]
@@ -81,7 +78,7 @@ macro_rules! book {
             }
 
             #[inline(always)]
-            pub fn get<T: 'static>(&self, id: u8) -> Option<&'static T> {
+            pub fn get<T: 'static>(&self, id: $IdType) -> Option<&'static T> {
                 let idx = id as usize;
                 let types = [ $( TypeId::of::<$Type>() ),* ];
                 if let Some(&type_id) = types.get(idx) {
@@ -93,7 +90,7 @@ macro_rules! book {
             }
 
             #[inline(always)]
-            pub fn get_mut<T: 'static>(&self, id: u8) -> Option<&'static mut T> {
+            pub fn get_mut<T: 'static>(&self, id: $IdType) -> Option<&'static mut T> {
                 let idx = id as usize;
                 let types = [ $( TypeId::of::<$Type>() ),* ];
                 if let Some(&type_id) = types.get(idx) {
@@ -108,7 +105,7 @@ macro_rules! book {
         impl Book<N> {
             $(
                 #[inline(always)]
-                pub fn $name(&self) -> BookRef<$Type, { BookIds::$name as u8 }> {
+                pub fn $name(&self) -> BookRef<$Type, { BookIds::$name as $IdType }> {
                     BookRef::new($name.0.get())
                 }
             )*
@@ -116,8 +113,9 @@ macro_rules! book {
     };
 
     (
-        $vis:vis static $BookName:ident;
-        $( $name:ident => $Type:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)?
+        $vis:vis $BookName:ident : $IdType:ty {
+            $( $name:ident : $Type:ident = $InitType:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)?
+        }
     ) => {
         $vis use $BookName::INSTANCE as $BookName;
 
@@ -125,7 +123,7 @@ macro_rules! book {
         $vis mod $BookName {
             use super::*;
 
-            book!(@core $( $name => $Type { $( $f_name : $f_val ),* } ),* );
+            book!(@core $IdType, $( $name : $Type = $InitType { $( $f_name : $f_val ),* } ),* );
 
             pub static INSTANCE: Book<N> = Book::new([
                 $(
@@ -135,8 +133,22 @@ macro_rules! book {
         }
     };
 
-    ( $( $name:ident => $Type:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)? ) => {{
-        book!(@core $( $name => $Type { $( $f_name : $f_val ),* } ),* );
+    (
+        $vis:vis $BookName:ident {
+            $( $name:ident : $Type:ident = $InitType:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)?
+        }
+    ) => {
+        book! {
+            $vis $BookName : u8 {
+                $( $name : $Type = $InitType { $( $f_name : $f_val ),* } ),*
+            }
+        }
+    };
+
+    (
+        $IdType:ty => $( $name:ident : $Type:ident = $InitType:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)?
+    ) => {{
+        book!(@core $IdType, $( $name : $Type = $InitType { $( $f_name : $f_val ),* } ),* );
 
         Book::new([
             $(
@@ -144,4 +156,12 @@ macro_rules! book {
             ),*
         ])
     }};
+
+    (
+        $( $name:ident : $Type:ident = $InitType:ident { $( $f_name:ident : $f_val:expr ),* $(,)? } ),* $(,)?
+    ) => {
+        book! {
+            u8 => $( $name : $Type = $InitType { $( $f_name : $f_val ),* } ),*
+        }
+    };
 }
