@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5eac2972.js";
+            window.path_to_searchindex_js = "searchindex-7018dce2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -177,18 +177,19 @@
                         <h1 id="compile"><a class="header" href="#compile">Compile</a></h1>
 <pre><code class="language-toml">[package]
 name = "kyaaa"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2024"
 description="Zero heap. Zero vtables. A static no_std heterogeneous list (HList) that murders dynamic dispatch and melts straight into raw ASM... kyaaa!"
 keywords = ["hlist", "no_std", "zero-cost", "macro", "data-structures"]
 categories = ["data-structures", "no-std", "embedded", "memory-management"]
-license = "AGPL-3.0-only"
+license = "MIT"
 repository = "https://github.com/SAP2B/kyaaa"
 readme = "README.md"
 
-[dependencies]
-
 [dev-dependencies]
+criterion = "0.8.2"
+
+[dependencies]
 
 [profile.dev]
 panic = "abort"
@@ -201,7 +202,16 @@ panic = "abort"
 strip = true         
 debug = false
 
+[workspace]
+members = [
+    ".",
+    "math_proof"
+]
+resolver = "2"
 
+#[[bench]]
+#name = "ring_bench"
+#harness = false
 </code></pre>
 
                     </main>
