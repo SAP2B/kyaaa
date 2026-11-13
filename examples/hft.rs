@@ -10,17 +10,17 @@ fn black_box<T>(dummy: T) -> T {
 
 page!(
     align(64) struct MarketTick {
-        id: u8,
-        symbol: Str<39>,
         price: u64,
         volume: u64,
         timestamp: u64,
+        id: u8,
+        symbol: Str<39>,
     }
 
     align(64) struct OrderStatus {
         id: u8,
-        order_id: Str<64>,
-        status: Str<63>,
+        order_id: Str<63>,
+        status: Str<64>,
     }
 );
 

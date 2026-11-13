@@ -22,11 +22,11 @@ pub const POW10: [u64; 20] = [
 ];
 
 #[repr(transparent)]
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Hash, Debug)]
 pub struct Q64<const DECIMALS: u32 = 8>(pub u64);
 
 #[repr(transparent)]
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Hash, Debug)]
 pub struct IQ64<const DECIMALS: u32 = 8>(pub i64);
 
 impl<const DECIMALS: u32> Q64<DECIMALS> {
