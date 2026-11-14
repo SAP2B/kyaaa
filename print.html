@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-55546297.js";
+            window.path_to_searchindex_js = "searchindex-1bacfe2b.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d93f168.js"></script>
@@ -207,7 +207,7 @@ page!(
     }
 );
 
-book!(
+dbook!(
     pub HLIST {
         zelda: Game = Game {
             id: Str::from_str("323456789012345678901234"),
@@ -225,7 +225,7 @@ kmain!(
 
     fn kmain(_sp: *const usize) -&gt; i32 {
         clock!({
-            let hlist = book!(
+            let hlist = dbook!(
                 nier: Game = Game {
                     id: Str::from_str("023456789012345678901234"),
                     name: Str::from_str("LOL"),
@@ -303,10 +303,15 @@ panic = "abort"
 strip = true         
 debug = false
 
+[profile.release.package.wasm]
+opt-level = "z"
+
 [workspace]
 members = [
     ".",
-    "math_proof"
+    "math_proof", 
+    "wasm",
+    "xtask"
 ]
 resolver = "2"
 
@@ -351,10 +356,15 @@ panic = "abort"
 strip = true         
 debug = false
 
+[profile.release.package.wasm]
+opt-level = "z"
+
 [workspace]
 members = [
     ".",
-    "math_proof"
+    "math_proof", 
+    "wasm",
+    "xtask"
 ]
 resolver = "2"
 
