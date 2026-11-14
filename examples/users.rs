@@ -19,7 +19,7 @@ kmain!(
     align(64);
 
     fn kmain(_sp: *const usize) -> i32 {
-        let hlist = book!(
+        let hlist = dbook!(
             u01: User = User { id: 1, value: 0 },
             u02: User = User { id: 2, value: 0 },
             u03: User = User { id: 3, value: 0 },

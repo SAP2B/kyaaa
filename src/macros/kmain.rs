@@ -9,7 +9,7 @@ macro_rules! kmain {
         fn panic(_info: &::core::panic::PanicInfo) -> ! {
             #[cfg(target_os = "none")]
             {
-                $crate::std::syscall::exit(1)
+                $crate::std::linux::prelude::exit(1)
             }
             #[cfg(not(target_os = "none"))]
             {

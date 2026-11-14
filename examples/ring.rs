@@ -20,15 +20,23 @@ page!(
     }
 );
 
-book!(
+dbook!(
     pub HLIST {
-        zelda: Game = Game {
-            id: Str::from_str("323456789012345678901234"),
-            name: Str::from_str("LOL"),
+        nier: Game = Game {
+            id: Str::from_str("023456789012345678901234"),
+            name: Str::from_str("NieR Automata"),
+        },
+        sap: User = User {
+            id: Str::from_str("223456789012345678901234"),
+            name: Str::from_str("SAP2B HFT"),
         },
         admin: User = User {
             id: Str::from_str("423456789012345678901234"),
             name: Str::from_str("admin"),
+        },
+        zelda: Game = Game {
+            id: Str::from_str("323456789012345678901234"),
+            name: Str::from_str("LOL"),
         },
     }
 );
@@ -39,42 +47,22 @@ kmain!(
     align(64);
 
     fn kmain(_sp: *const usize) -> i32 {
+        let (mut producer, mut consumer) = GAME_RING.split();
+
         clock!({
-            let hlist = book!(
-                nier: Game = Game {
-                    id: Str::from_str("023456789012345678901234"),
-                    name: Str::from_str("LOL"),
-                },
-                sap: User = User {
-                    id: Str::from_str("223456789012345678901234"),
-                    name: Str::from_str("SAP2B"),
-                }
-            );
+            producer.push(HLIST.nier().id());
 
-            hlist.nier().set().id("1").name("NieR Automata");
-            hlist.sap().set().name("SAP2B HFT");
-
-            let (mut producer, mut consumer) = GAME_RING.split();
-
-            producer.spin(|slot| {
-                slot.write(hlist.sap().id());
+            consumer.eat(|&received_id| {
+                let _ = HLIST.get_unchecked::<Game>(received_id);
             });
-
-            consumer.eat(|&received| {
-                if received == 1 {
-                    HLIST.zelda().set().id("777").name("Zelda Updated");
-                }
-            });
-
-            HLIST.admin().set().name("Admin HFT");
-
-            black_box((
-                hlist.nier().get(),
-                hlist.sap().get(),
-                HLIST.admin().get(),
-                HLIST.zelda().get(),
-            ));
         });
+
+        black_box((
+            HLIST.nier().get(),
+            HLIST.sap().get(),
+            HLIST.admin().get(),
+            HLIST.zelda().get(),
+        ));
 
         0
     }

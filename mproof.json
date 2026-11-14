@@ -1,0 +1,1600 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "timestamp": "2026-11-13T16:52:13.294397719Z",
+    "kani_version": "0.68.0",
+    "target": "x86_64-unknown-linux-gnu",
+    "build_mode": "release"
+  },
+  "project": {
+    "crate_name": [
+      "math_proof"
+    ],
+    "workspace_root": "/home/pas/git/kyaaa",
+    "output_dir": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out"
+  },
+  "tools": {
+    "kani": "0.68.0",
+    "rustc": "rustc 1.100.0-nightly (8925ea358 2026-08-20)",
+    "cbmc": "6.11.0 (cbmc-6.11.0)",
+    "goto_cc": "gcc (goto-cc 6.11.0 (cbmc-6.11.0)) 16.2.1",
+    "goto_instrument": "6.11.0 (cbmc-6.11.0)",
+    "solvers": [
+      {
+        "name": "cadical",
+        "version": null
+      }
+    ]
+  },
+  "harness_metadata": [
+    {
+      "pretty_name": "q::verify_iq64_add_sub",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof1q19verify_iq64_add_sub",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/q.rs",
+        "start_line": 4,
+        "end_line": 13
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof1q19verify_iq64_add_sub.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    },
+    {
+      "pretty_name": "ofi::verify_ofi_identity",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof3ofi19verify_ofi_identity",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/ofi.rs",
+        "start_line": 47,
+        "end_line": 68
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof3ofi19verify_ofi_identity.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    },
+    {
+      "pretty_name": "q::verify_iq64_negation",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof1q20verify_iq64_negation",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/q.rs",
+        "start_line": 16,
+        "end_line": 21
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof1q20verify_iq64_negation.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    },
+    {
+      "pretty_name": "ofi::verify_ofi_commutativity_and_bounds",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof3ofi35verify_ofi_commutativity_and_bounds",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/ofi.rs",
+        "start_line": 4,
+        "end_line": 44
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof3ofi35verify_ofi_commutativity_and_bounds.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    },
+    {
+      "pretty_name": "q::verify_q64_mul",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof1q14verify_q64_mul",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/q.rs",
+        "start_line": 24,
+        "end_line": 33
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof1q14verify_q64_mul.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    },
+    {
+      "pretty_name": "q::verify_q64_commutativity",
+      "mangled_name": "_RNvNtCs6SMWMgaExo2_10math_proof1q24verify_q64_commutativity",
+      "crate_name": "math_proof",
+      "source": {
+        "file": "math_proof/src/q.rs",
+        "start_line": 36,
+        "end_line": 45
+      },
+      "goto_file": "/home/pas/git/kyaaa/target/kani/x86_64-unknown-linux-gnu/debug/build/math_proof/2808dc256b4cc97c/out/math_proof-2808dc256b4cc97c__RNvNtCs6SMWMgaExo2_10math_proof1q24verify_q64_commutativity.symtab.out",
+      "attributes": {
+        "kind": "Proof",
+        "should_panic": false
+      },
+      "contract": {
+        "contracted_function_name": null,
+        "recursion_tracker": null
+      },
+      "has_loop_contracts": false,
+      "is_automatically_generated": false,
+      "is_bounded": false,
+      "is_ctor_based": false
+    }
+  ],
+  "error_details": [
+    {
+      "harness_id": "q::verify_iq64_add_sub",
+      "has_errors": false
+    },
+    {
+      "harness_id": "ofi::verify_ofi_identity",
+      "has_errors": false
+    },
+    {
+      "harness_id": "q::verify_iq64_negation",
+      "has_errors": false
+    },
+    {
+      "harness_id": "ofi::verify_ofi_commutativity_and_bounds",
+      "has_errors": false
+    },
+    {
+      "harness_id": "q::verify_q64_mul",
+      "has_errors": false
+    },
+    {
+      "harness_id": "q::verify_q64_commutativity",
+      "has_errors": false
+    }
+  ],
+  "property_details": [
+    {
+      "harness_id": "q::verify_iq64_add_sub",
+      "property_details": {
+        "total_properties": 4,
+        "passed": 4,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    },
+    {
+      "harness_id": "ofi::verify_ofi_identity",
+      "property_details": {
+        "total_properties": 36,
+        "passed": 36,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    },
+    {
+      "harness_id": "q::verify_iq64_negation",
+      "property_details": {
+        "total_properties": 2,
+        "passed": 2,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    },
+    {
+      "harness_id": "ofi::verify_ofi_commutativity_and_bounds",
+      "property_details": {
+        "total_properties": 35,
+        "passed": 35,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    },
+    {
+      "harness_id": "q::verify_q64_mul",
+      "property_details": {
+        "total_properties": 9,
+        "passed": 9,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    },
+    {
+      "harness_id": "q::verify_q64_commutativity",
+      "property_details": {
+        "total_properties": 7,
+        "passed": 7,
+        "failed": 0,
+        "unreachable": 0,
+        "undetermined": 0,
+        "solver_error": 0,
+        "satisfied": 0,
+        "unsatisfiable": 0,
+        "covered": 0,
+        "uncovered": 0
+      }
+    }
+  ],
+  "cbmc": [
+    {
+      "harness_id": "q::verify_iq64_add_sub",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.00794983,
+        "size_program_expression": 227,
+        "slicing_removed_assignments": 74,
+        "vccs_generated": 8,
+        "vccs_remaining": 8,
+        "runtime_postprocess_equation_s": 0.000438425,
+        "runtime_convert_ssa_s": 0.0058209,
+        "runtime_post_process_s": 8.349e-6,
+        "runtime_solver_s": 0.078093,
+        "runtime_decision_procedure_s": 0.0782372
+      }
+    },
+    {
+      "harness_id": "ofi::verify_ofi_identity",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.0771869,
+        "size_program_expression": 1753,
+        "slicing_removed_assignments": 1034,
+        "vccs_generated": 184,
+        "vccs_remaining": 44,
+        "runtime_postprocess_equation_s": 0.00127836,
+        "runtime_convert_ssa_s": 0.00875598,
+        "runtime_post_process_s": 8.522e-6,
+        "runtime_solver_s": 0.00193961,
+        "runtime_decision_procedure_s": 0.00206634
+      }
+    },
+    {
+      "harness_id": "q::verify_iq64_negation",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.00723967,
+        "size_program_expression": 217,
+        "slicing_removed_assignments": 87,
+        "vccs_generated": 6,
+        "vccs_remaining": 6,
+        "runtime_postprocess_equation_s": 0.000087172,
+        "runtime_convert_ssa_s": 0.00186743,
+        "runtime_post_process_s": 0.000022939,
+        "runtime_solver_s": 0.00363807,
+        "runtime_decision_procedure_s": 0.00376909
+      }
+    },
+    {
+      "harness_id": "ofi::verify_ofi_commutativity_and_bounds",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.104021,
+        "size_program_expression": 2349,
+        "slicing_removed_assignments": 1534,
+        "vccs_generated": 286,
+        "vccs_remaining": 66,
+        "runtime_postprocess_equation_s": 0.000943764,
+        "runtime_convert_ssa_s": 0.020598,
+        "runtime_post_process_s": 0.000010811,
+        "runtime_solver_s": 0.00455554,
+        "runtime_decision_procedure_s": 0.00502498
+      }
+    },
+    {
+      "harness_id": "q::verify_q64_mul",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.00769913,
+        "size_program_expression": 281,
+        "slicing_removed_assignments": 116,
+        "vccs_generated": 14,
+        "vccs_remaining": 8,
+        "runtime_postprocess_equation_s": 0.000068108,
+        "runtime_convert_ssa_s": 0.0339606,
+        "runtime_post_process_s": 8.868e-6,
+        "runtime_solver_s": 0.0224423,
+        "runtime_decision_procedure_s": 0.022691
+      }
+    },
+    {
+      "harness_id": "q::verify_q64_commutativity",
+      "cbmc_metadata": {
+        "version": "6.11.0",
+        "os_info": "x86_64 linux unix"
+      },
+      "configuration": {
+        "object_bits": 16,
+        "solver": "cadical"
+      },
+      "cbmc_stats": {
+        "runtime_symex_s": 0.0135215,
+        "size_program_expression": 523,
+        "slicing_removed_assignments": 214,
+        "vccs_generated": 20,
+        "vccs_remaining": 14,
+        "runtime_postprocess_equation_s": 0.000934627,
+        "runtime_convert_ssa_s": 0.0257599,
+        "runtime_post_process_s": 0.000011636,
+        "runtime_solver_s": 0.0455894,
+        "runtime_decision_procedure_s": 0.0460638
+      }
+    }
+  ],
+  "verification_results": {
+    "summary": {
+      "total_harnesses": 6,
+      "executed": 6,
+      "status": "completed",
+      "successful": 6,
+      "failed": 0,
+      "duration_ms": 1203
+    },
+    "results": [
+      {
+        "harness_id": "ofi::verify_ofi_identity",
+        "status": "Success",
+        "duration_ms": 339,
+        "checks": [
+          {
+            "id": 1,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "38"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 3,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 4,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 5,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "38"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 6,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 7,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "29",
+              "column": "20"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 8,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_le}>",
+            "status": "Success",
+            "description": "unreachable code",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "unreachable"
+          },
+          {
+            "id": 9,
+            "function": "ofi::verify_ofi_identity",
+            "status": "Success",
+            "description": "assertion failed: ofi_val.to_raw() == 0",
+            "location": {
+              "file": "math_proof/src/ofi.rs",
+              "line": "67",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 10,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>",
+            "status": "Success",
+            "description": "unreachable code",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "unreachable"
+          },
+          {
+            "id": 11,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 12,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "13"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 13,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "attempt to add with overflow",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "63",
+              "column": "13"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 14,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 15,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_le}>",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 16,
+            "function": "std::cmp::Ordering::as_raw",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "433",
+              "column": "9"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 17,
+            "function": "std::cmp::Ordering::as_raw",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "433",
+              "column": "9"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 18,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 19,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 20,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 21,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 22,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 23,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 24,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "13"
+            },
+            "category": "array_bounds"
+          },
+          {
+            "id": 25,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 26,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 27,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 28,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 29,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 30,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 31,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 32,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 33,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 34,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 35,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 36,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          }
+        ]
+      },
+      {
+        "harness_id": "ofi::verify_ofi_commutativity_and_bounds",
+        "status": "Success",
+        "duration_ms": 376,
+        "checks": [
+          {
+            "id": 1,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "13"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 3,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "attempt to add with overflow",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "63",
+              "column": "13"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 4,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>",
+            "status": "Success",
+            "description": "unreachable code",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "unreachable"
+          },
+          {
+            "id": 5,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 6,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "38"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 7,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "23",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 8,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 9,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "38"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 10,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "27",
+              "column": "17"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 11,
+            "function": "kyaaa::prelude::order_flow_imbalance",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/math/ofi.rs",
+              "line": "29",
+              "column": "20"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 12,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_le}>",
+            "status": "Success",
+            "description": "unreachable code",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "unreachable"
+          },
+          {
+            "id": 13,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 14,
+            "function": "std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_le}>",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs",
+              "line": "660",
+              "column": "15"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 15,
+            "function": "std::cmp::Ordering::as_raw",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "433",
+              "column": "9"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 16,
+            "function": "std::cmp::Ordering::as_raw",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "433",
+              "column": "9"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 17,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 18,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 19,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 20,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 21,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 22,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "22"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 23,
+            "function": "kyaaa::prelude::Str::<32>::from_bytes",
+            "status": "Success",
+            "description": "index out of bounds: the length is less than or equal to the given index",
+            "location": {
+              "file": "src/types/string.rs",
+              "line": "62",
+              "column": "13"
+            },
+            "category": "array_bounds"
+          },
+          {
+            "id": 24,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 25,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 26,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 27,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 28,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 29,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "58"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 30,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer NULL",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 31,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer invalid",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 32,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: deallocated dynamic object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 33,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: dead object",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 34,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: pointer outside object bounds",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          },
+          {
+            "id": 35,
+            "function": "std::cmp::impls::<impl std::cmp::Ord for u64>::cmp",
+            "status": "Success",
+            "description": "dereference failure: invalid integer address",
+            "location": {
+              "file": "/home/runner/.rustup/toolchains/nightly-2026-08-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs",
+              "line": "2287",
+              "column": "65"
+            },
+            "category": "pointer_dereference"
+          }
+        ]
+      },
+      {
+        "harness_id": "q::verify_q64_commutativity",
+        "status": "Success",
+        "duration_ms": 154,
+        "checks": [
+          {
+            "id": 1,
+            "function": "q::verify_q64_commutativity",
+            "status": "Success",
+            "description": "assertion failed: (a + b).to_raw() == (b + a).to_raw()",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "43",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "q::verify_q64_commutativity",
+            "status": "Success",
+            "description": "assertion failed: (a * b).to_raw() == (b * a).to_raw()",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "44",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 3,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "15"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 4,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 5,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "arithmetic_overflow"
+          },
+          {
+            "id": 6,
+            "function": "<kyaaa::prelude::Q64 as std::ops::Add>::add",
+            "status": "Success",
+            "description": "attempt to add with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "164",
+              "column": "14"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 7,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "division by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "division-by-zero"
+          }
+        ]
+      },
+      {
+        "harness_id": "q::verify_q64_mul",
+        "status": "Success",
+        "duration_ms": 122,
+        "checks": [
+          {
+            "id": 1,
+            "function": "q::verify_q64_mul",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "31",
+              "column": "21"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "q::verify_q64_mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "31",
+              "column": "20"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 3,
+            "function": "q::verify_q64_mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "31",
+              "column": "20"
+            },
+            "category": "arithmetic_overflow"
+          },
+          {
+            "id": 4,
+            "function": "q::verify_q64_mul",
+            "status": "Success",
+            "description": "assertion failed: (a * b).to_raw() == expected",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "32",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 5,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to multiply with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "15"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 6,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 7,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "attempt to divide by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "arithmetic_overflow"
+          },
+          {
+            "id": 8,
+            "function": "kyaaa::prelude::Q64::mul",
+            "status": "Success",
+            "description": "division by zero",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "98",
+              "column": "14"
+            },
+            "category": "division-by-zero"
+          },
+          {
+            "id": 9,
+            "function": "q::verify_q64_mul",
+            "status": "Success",
+            "description": "division by zero",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "31",
+              "column": "20"
+            },
+            "category": "division-by-zero"
+          }
+        ]
+      },
+      {
+        "harness_id": "q::verify_iq64_negation",
+        "status": "Success",
+        "duration_ms": 60,
+        "checks": [
+          {
+            "id": 1,
+            "function": "q::verify_iq64_negation",
+            "status": "Success",
+            "description": "assertion failed: (-(-a)).to_raw() == a.to_raw()",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "20",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "<kyaaa::prelude::IQ64 as std::ops::Neg>::neg",
+            "status": "Success",
+            "description": "attempt to negate with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "196",
+              "column": "14"
+            },
+            "category": "assertion"
+          }
+        ]
+      },
+      {
+        "harness_id": "q::verify_iq64_add_sub",
+        "status": "Success",
+        "duration_ms": 152,
+        "checks": [
+          {
+            "id": 1,
+            "function": "<kyaaa::prelude::IQ64 as std::ops::Sub>::sub",
+            "status": "Success",
+            "description": "attempt to subtract with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "188",
+              "column": "14"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 2,
+            "function": "<kyaaa::prelude::IQ64 as std::ops::Add>::add",
+            "status": "Success",
+            "description": "attempt to add with overflow",
+            "location": {
+              "file": "src/types/q.rs",
+              "line": "180",
+              "column": "14"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 3,
+            "function": "q::verify_iq64_add_sub",
+            "status": "Success",
+            "description": "assertion failed: (a + b).to_raw() == (ra as i64).wrapping_add(rb as i64)",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "11",
+              "column": "5"
+            },
+            "category": "assertion"
+          },
+          {
+            "id": 4,
+            "function": "q::verify_iq64_add_sub",
+            "status": "Success",
+            "description": "assertion failed: (a - b).to_raw() == (ra as i64).wrapping_sub(rb as i64)",
+            "location": {
+              "file": "math_proof/src/q.rs",
+              "line": "12",
+              "column": "5"
+            },
+            "category": "assertion"
+          }
+        ]
+      }
+    ]
+  },
+  "coverage": {
+    "enabled": false
+  }
+}

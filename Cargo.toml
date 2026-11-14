@@ -31,10 +31,15 @@ panic = "abort"
 strip = true         
 debug = false
 
+[profile.release.package.wasm]
+opt-level = "z"
+
 [workspace]
 members = [
     ".",
-    "math_proof"
+    "math_proof", 
+    "wasm",
+    "xtask"
 ]
 resolver = "2"
 

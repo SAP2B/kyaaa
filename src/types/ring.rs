@@ -15,6 +15,7 @@ pub struct Ring<T: Copy, const N: usize> {
 unsafe impl<T: Copy + Send, const N: usize> Sync for Ring<T, N> {}
 
 impl<T: Copy, const N: usize> Default for Ring<T, N> {
+    #[inline(always)]
     fn default() -> Self {
         Self::new()
     }
@@ -22,7 +23,6 @@ impl<T: Copy, const N: usize> Default for Ring<T, N> {
 
 impl<T: Copy, const N: usize> Ring<T, N> {
     pub const MASK: usize = N - 1;
-    pub const BATCH: usize = if N >= 8 { N / 4 } else { 1 };
 
     #[inline(always)]
     pub const fn new() -> Self {
@@ -64,7 +64,6 @@ impl<'a, T: Copy, const N: usize> Producer<'a, T, N> {
     #[inline(always)]
     pub fn reserve(&mut self) -> Option<&mut MaybeUninit<T>> {
         let tail = self.local_tail;
-
         if tail.wrapping_sub(self.cached_head) >= N {
             self.cached_head = self.ring.head.0.load(Ordering::Acquire);
             if tail.wrapping_sub(self.cached_head) >= N {
@@ -89,6 +88,17 @@ impl<'a, T: Copy, const N: usize> Producer<'a, T, N> {
     }
 
     #[inline(always)]
+    pub fn push(&mut self, value: T) -> bool {
+        if let Some(slot) = self.reserve() {
+            slot.write(value);
+            self.commit();
+            true
+        } else {
+            false
+        }
+    }
+
+    #[inline(always)]
     pub fn spin<F: FnOnce(&mut MaybeUninit<T>)>(&mut self, f: F) {
         loop {
             if let Some(slot) = self.reserve() {
@@ -97,17 +107,6 @@ impl<'a, T: Copy, const N: usize> Producer<'a, T, N> {
                 break;
             }
             core::hint::spin_loop();
-        }
-    }
-
-    #[inline(always)]
-    pub fn push(&mut self, value: T) -> bool {
-        if let Some(slot) = self.reserve() {
-            slot.write(value);
-            self.commit();
-            true
-        } else {
-            false
         }
     }
 }
@@ -121,11 +120,17 @@ pub struct Consumer<'a, T: Copy, const N: usize> {
     last_published_head: usize,
 }
 
+impl<'a, const N: usize> Consumer<'a, (u8, u8), N> {
+    #[inline(always)]
+    pub fn update<F: FnOnce(u8, u8)>(&mut self, f: F) -> bool {
+        self.eat(|&(id, action)| f(id, action))
+    }
+}
+
 impl<'a, T: Copy, const N: usize> Consumer<'a, T, N> {
     #[inline(always)]
     pub fn peek(&mut self) -> Option<&T> {
         let head = self.local_head;
-
         if head == self.cached_tail {
             self.cached_tail = self.ring.tail.0.load(Ordering::Acquire);
             if head == self.cached_tail {
@@ -149,9 +154,32 @@ impl<'a, T: Copy, const N: usize> Consumer<'a, T, N> {
         let next_head = self.local_head.wrapping_add(1);
         self.local_head = next_head;
 
-        if next_head.wrapping_sub(self.last_published_head) >= Ring::<T, N>::BATCH {
+        if next_head.wrapping_sub(self.last_published_head) >= (N / 4).max(1) {
             self.ring.head.0.store(next_head, Ordering::Release);
             self.last_published_head = next_head;
+        }
+    }
+
+    #[inline(always)]
+    pub fn pop(&mut self) -> Option<T> {
+        let head = self.local_head;
+        if head == self.cached_tail {
+            self.cached_tail = self.ring.tail.0.load(Ordering::Acquire);
+            if head == self.cached_tail {
+                return None;
+            }
+        }
+
+        unsafe {
+            let ptr = self
+                .ring
+                .data
+                .get_unchecked(head & Ring::<T, N>::MASK)
+                .get()
+                .cast::<T>();
+            let val = *ptr;
+            self.advance();
+            Some(val)
         }
     }
 
@@ -164,12 +192,5 @@ impl<'a, T: Copy, const N: usize> Consumer<'a, T, N> {
         } else {
             false
         }
-    }
-
-    #[inline(always)]
-    pub fn pop(&mut self) -> Option<T> {
-        self.peek().copied().inspect(|_| {
-            self.advance();
-        })
     }
 }

@@ -8,7 +8,7 @@ fn black_box<T>(dummy: T) -> T {
     core::hint::black_box(dummy)
 }
 
-book!(
+dbook!(
     pub MarketState {
         btcusdt: BookTop = BookTop {
             bid_price: Q64::from_raw(0),

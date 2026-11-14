@@ -22,6 +22,13 @@ impl<const N: usize> Assign<Str<N>> for &[u8] {
     }
 }
 
+impl<const N: usize> Str<N> {
+    #[inline(always)]
+    pub fn copy_from_str(&mut self, s: &str) {
+        s.assign_to(self);
+    }
+}
+
 impl<const N: usize> Assign<Str<N>> for &str {
     #[inline(always)]
     fn assign_to(self, dest: &mut Str<N>) {
@@ -70,11 +77,23 @@ impl<const N: usize> Str<N> {
         Self::from_bytes(s.as_bytes())
     }
 
-    #[inline(always)]
+    /*#[inline(always)]
     pub fn len(&self) -> usize {
         core::ffi::CStr::from_bytes_until_nul(&self.0)
             .map(|s| s.to_bytes().len())
             .unwrap_or(N)
+    }*/
+
+    #[inline(always)]
+    pub fn len(&self) -> usize {
+        let mut i = 0;
+        while i < N {
+            if unsafe { *self.0.get_unchecked(i) } == 0 {
+                return i;
+            }
+            i += 1;
+        }
+        N
     }
 
     #[inline(always)]

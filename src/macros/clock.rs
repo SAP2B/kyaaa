@@ -22,11 +22,17 @@ macro_rules! clock {
                 tv_nsec: 0,
             };
 
-            let _ = clock_gettime(1, &mut start_time as *mut Timespec as *mut u8);
+            let _ = $crate::std::linux::prelude::clock_gettime(
+                1,
+                &mut start_time as *mut Timespec as *mut u8,
+            );
             let start_tsc = unsafe { core::arch::x86_64::_rdtsc() };
 
             loop {
-                let _ = clock_gettime(1, &mut end_time as *mut Timespec as *mut u8);
+                let _ = $crate::std::linux::prelude::clock_gettime(
+                    1,
+                    &mut end_time as *mut Timespec as *mut u8,
+                );
                 let elapsed_ns = (end_time.tv_sec - start_time.tv_sec) * 1_000_000_000
                     + (end_time.tv_nsec - start_time.tv_nsec);
                 if elapsed_ns >= 5_000_000 {
@@ -91,7 +97,7 @@ macro_rules! clock {
         write_num(ns, &mut out_buf, &mut pos);
         write_str(b" ns ]\n", &mut out_buf, &mut pos);
 
-        let _ = write(1, out_buf.as_ptr(), pos);
+        let _ = $crate::std::linux::prelude::write(1, out_buf.as_ptr(), pos);
 
         _res
     }};

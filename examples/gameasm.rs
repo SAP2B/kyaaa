@@ -20,7 +20,7 @@ page!(
     }
 );
 
-book!(
+dbook!(
     pub HLIST {
         zelda: Game = Game {
             id: Str::from_str("323456789012345678901234"),
@@ -38,7 +38,7 @@ kmain!(
 
     fn kmain(_sp: *const usize) -> i32 {
         clock!({
-            let hlist = book!(
+            let hlist = dbook!(
                 nier: Game = Game {
                     id: Str::from_str("023456789012345678901234"),
                     name: Str::from_str("LOL"),

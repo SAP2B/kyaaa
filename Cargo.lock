@@ -528,6 +528,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasm"
+version = "0.0.1"
+dependencies = [
+ "kyaaa",
+]
+
+[[package]]
 name = "wasm-bindgen"
 version = "0.2.130"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -626,6 +633,10 @@ checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
 ]
+
+[[package]]
+name = "xtask"
+version = "0.0.1"
 
 [[package]]
 name = "zerocopy"

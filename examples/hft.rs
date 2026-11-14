@@ -24,7 +24,7 @@ page!(
     }
 );
 
-book!(
+dbook!(
     pub HFT_BOOK {
         best_bid: MarketTick = MarketTick {
             id: 1,
@@ -48,7 +48,7 @@ kmain!(
 
     fn kmain(_sp: *const usize) -> i32 {
         clock!({
-            let feed = book!(
+            let feed = dbook!(
                 tick: MarketTick = MarketTick {
                     id: 1,
                     symbol: Str::from_str("BTCUSDT"),
